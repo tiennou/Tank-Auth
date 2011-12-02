@@ -9,7 +9,9 @@ class Welcome extends CI_Controller
 		$this->load->helper('url');
 		$this->load->library('tank_auth');
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	function index()
 	{
 		if (!$this->tank_auth->is_logged_in())
@@ -23,6 +25,8 @@ class Welcome extends CI_Controller
 			$this->load->view('welcome', $data);
 		}
 	}
+
+	// --------------------------------------------------------------------	
 }
 
 /* End of file welcome.php */

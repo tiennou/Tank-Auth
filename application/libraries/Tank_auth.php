@@ -33,7 +33,9 @@ class Tank_auth
 		// Try to autologin
 		$this->autologin();
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Login user on the site. Return TRUE if login is successful
 	 * (user exists and activated, password is correct), otherwise FALSE.
@@ -114,7 +116,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Logout user from the site
 	 *
@@ -129,7 +133,9 @@ class Tank_auth
 
 		$this->ci->session->sess_destroy();
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if user logged in. Also test if user is activated or not.
 	 *
@@ -140,7 +146,9 @@ class Tank_auth
 	{
 		return $this->ci->session->userdata('status') === ($activated ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED);
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Get user_id
 	 *
@@ -150,7 +158,9 @@ class Tank_auth
 	{
 		return $this->ci->session->userdata('user_id');
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Get username
 	 *
@@ -160,7 +170,9 @@ class Tank_auth
 	{
 		return $this->ci->session->userdata('username');
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Create new user on the site and return some data about it:
 	 * user_id, username, password, email, new_email_key (if any).
@@ -212,6 +224,8 @@ class Tank_auth
 		return NULL;
 	}
 
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Check if username available for registering.
 	 * Can be called for instant form validation.
@@ -223,7 +237,9 @@ class Tank_auth
 	{
 		return ((strlen($username) > 0) AND $this->ci->users->is_username_available($username));
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if email available for registering.
 	 * Can be called for instant form validation.
@@ -235,7 +251,9 @@ class Tank_auth
 	{
 		return ((strlen($email) > 0) AND $this->ci->users->is_email_available($email));
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change email for activation and return some data about user:
 	 * user_id, username, email, new_email_key.
@@ -277,7 +295,9 @@ class Tank_auth
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Activate user using given key
 	 *
@@ -297,7 +317,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Set new password key for user and return some data about user:
 	 * user_id, username, email, new_pass_key.
@@ -331,7 +353,9 @@ class Tank_auth
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if given password key is valid and user is authenticated.
 	 *
@@ -348,7 +372,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Replace user password (forgotten) with a new one (set by user)
 	 * and return some data about it: user_id, username, new_password, email.
@@ -385,7 +411,9 @@ class Tank_auth
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change user password (only when user is logged in)
 	 *
@@ -420,7 +448,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change user email (only when user is logged in) and return some data about user:
 	 * user_id, username, new_email, new_email_key.
@@ -478,7 +508,9 @@ class Tank_auth
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Activate new email, if email activation key is valid.
 	 *
@@ -495,7 +527,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Delete user from the site (only when user is logged in)
 	 *
@@ -526,7 +560,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Get error message.
 	 * Can be invoked after any failed operation such as login or register.
@@ -537,7 +573,9 @@ class Tank_auth
 	{
 		return $this->error;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Save data for user's autologin
 	 *
@@ -565,7 +603,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Clear user's autologin data
 	 *
@@ -585,7 +625,9 @@ class Tank_auth
 			delete_cookie($this->ci->config->item('autologin_cookie_name', 'tank_auth'));
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Login user automatically if he/she provides correct autologin verification
 	 *
@@ -634,7 +676,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if login attempts exceeded max login attempts (specified in config)
 	 *
@@ -652,7 +696,9 @@ class Tank_auth
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Increase number of attempts for given IP-address and login
 	 * (if attempts to login is being counted)
@@ -671,7 +717,9 @@ class Tank_auth
 			}
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Clear all attempt records for given IP-address and login
 	 * (if attempts to login is being counted)
@@ -687,7 +735,9 @@ class Tank_auth
 		
 			$this->ci->login_attempts->clear_attempts($this->ci->input->ip_address(), $login, $this->ci->config->item('login_attempt_expire', 'tank_auth'));
 		}
-	}	
+	}
+
+	// --------------------------------------------------------------------		
 }
 
 /* End of file Tank_auth.php */

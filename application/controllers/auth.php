@@ -11,7 +11,10 @@ class Auth extends CI_Controller
 		$this->load->library('security');
 		$this->load->library('tank_auth');
 		$this->lang->load('tank_auth');
-	}	
+	}
+	
+	// --------------------------------------------------------------------
+		
 	function index()
 	{
 		if ($message = $this->session->flashdata('message'))
@@ -23,7 +26,9 @@ class Auth extends CI_Controller
 			redirect('/auth/login/');
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Login user on the site
 	 *
@@ -126,7 +131,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/login_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Logout user
 	 *
@@ -138,7 +145,9 @@ class Auth extends CI_Controller
 
 		$this->_show_message($this->lang->line('auth_message_logged_out'));
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Register user on the site
 	 *
@@ -250,7 +259,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/register_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Send activation email again, to the same or new email address
 	 *
@@ -294,7 +305,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/send_again_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Activate user account.
 	 * User is verified by user_id and authentication code in the URL.
@@ -318,7 +331,9 @@ class Auth extends CI_Controller
 			$this->_show_message($this->lang->line('auth_message_activation_failed'));
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Generate reset code (to change password) and send it to user
 	 *
@@ -365,7 +380,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/forgot_password_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Replace user password (forgotten) with a new one (set by user).
 	 * User is verified by user_id and authentication code in the URL.
@@ -416,6 +433,8 @@ class Auth extends CI_Controller
 		$this->load->view('auth/reset_password_form', $data);
 	}
 	
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change user password
 	 *
@@ -455,7 +474,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/change_password_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change user email
 	 *
@@ -498,7 +519,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/change_email_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Replace user email with a new one.
 	 * User is verified by user_id and authentication code in the URL.
@@ -522,7 +545,9 @@ class Auth extends CI_Controller
 			$this->_show_message($this->lang->line('auth_message_new_email_failed'));
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Delete user from the site (only when user is logged in)
 	 *
@@ -560,7 +585,9 @@ class Auth extends CI_Controller
 			$this->load->view('auth/unregister_form', $data);
 		}
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Show info message
 	 *
@@ -572,7 +599,9 @@ class Auth extends CI_Controller
 		$this->session->set_flashdata('message', $message);
 		redirect('/auth/');
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Send email message of given type (activate, forgot_password, etc.)
 	 *
@@ -592,7 +621,9 @@ class Auth extends CI_Controller
 		$this->email->set_alt_message($this->load->view('email/'.$type.'-txt', $data, TRUE));
 		$this->email->send();
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Create CAPTCHA image to verify user as a human
 	 *
@@ -621,7 +652,9 @@ class Auth extends CI_Controller
 
 		return $cap['image'];
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Callback function. Check if CAPTCHA test is passed.
 	 *
@@ -649,7 +682,9 @@ class Auth extends CI_Controller
 		
 		return TRUE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Create reCAPTCHA JS and non-JS HTML to verify user as a human
 	 *
@@ -667,7 +702,9 @@ class Auth extends CI_Controller
 
 		return $options.$html;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Callback function. Check if reCAPTCHA test is passed.
 	 *
@@ -687,6 +724,8 @@ class Auth extends CI_Controller
 		
 		return TRUE;
 	}
+
+	// --------------------------------------------------------------------	
 }
 
 /* End of file auth.php */

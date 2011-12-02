@@ -24,6 +24,8 @@ class Users extends CI_Model
 		$this->profile_table_name = $ci->config->item('db_table_prefix', 'tank_auth').$this->profile_table_name;
 	}
 	
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Get user record by Id
 	 *
@@ -45,7 +47,9 @@ class Users extends CI_Model
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Get user record by login (username or email)
 	 *
@@ -66,7 +70,9 @@ class Users extends CI_Model
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Get user record by username
 	 *
@@ -86,7 +92,9 @@ class Users extends CI_Model
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Get user record by email
 	 *
@@ -106,7 +114,9 @@ class Users extends CI_Model
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if username available for registering
 	 *
@@ -122,7 +132,9 @@ class Users extends CI_Model
 		
 		return $query->num_rows() == 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if email available for registering
 	 *
@@ -139,7 +151,9 @@ class Users extends CI_Model
 		
 		return $query->num_rows() == 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Create new user record
 	 *
@@ -166,7 +180,9 @@ class Users extends CI_Model
 		
 		return NULL;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Activate user if activation key is valid.
 	 * Can be called for not activated users only.
@@ -208,7 +224,9 @@ class Users extends CI_Model
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Purge table of non-activated users
 	 *
@@ -221,7 +239,9 @@ class Users extends CI_Model
 		$this->db->where('UNIX_TIMESTAMP(created) <', time() - $expire_period);
 		$this->db->delete($this->table_name);
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Delete user record
 	 *
@@ -242,7 +262,9 @@ class Users extends CI_Model
 		
 		return FALSE;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Set new password key for user.
 	 * This key can be used for authentication when resetting user's password.
@@ -261,7 +283,9 @@ class Users extends CI_Model
 		
 		return $this->db->affected_rows() > 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Check if given password key is valid and user is authenticated.
 	 *
@@ -281,7 +305,9 @@ class Users extends CI_Model
 		
 		return $query->num_rows() == 1;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change user password if password key is valid and user is authenticated.
 	 *
@@ -304,7 +330,9 @@ class Users extends CI_Model
 		
 		return $this->db->affected_rows() > 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Change user password
 	 *
@@ -321,7 +349,9 @@ class Users extends CI_Model
 		
 		return $this->db->affected_rows() > 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Set new email for user (may be activated or not).
 	 * The new email cannot be used for login or notification before it is activated.
@@ -343,7 +373,9 @@ class Users extends CI_Model
 		
 		return $this->db->affected_rows() > 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Activate new email (replace old email with new one) if activation key is valid.
 	 *
@@ -363,7 +395,9 @@ class Users extends CI_Model
 		
 		return $this->db->affected_rows() > 0;
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Update user login info, such as IP-address or login time, and
 	 * clear previously generated (but not activated) passwords.
@@ -392,6 +426,8 @@ class Users extends CI_Model
 		$this->db->update($this->table_name);
 	}
 	
+	// --------------------------------------------------------------------
+	
 	/**
 	 * Ban user
 	 *
@@ -407,7 +443,9 @@ class Users extends CI_Model
 			'ban_reason'	=> $reason,
 		));
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Unban user
 	 *
@@ -422,7 +460,9 @@ class Users extends CI_Model
 			'ban_reason'	=> NULL,
 		));
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Create an empty profile for a new user
 	 *
@@ -435,7 +475,9 @@ class Users extends CI_Model
 		
 		return $this->db->insert($this->profile_table_name);
 	}
-	
+
+	// --------------------------------------------------------------------
+		
 	/**
 	 * Delete user profile
 	 *
@@ -447,6 +489,8 @@ class Users extends CI_Model
 		$this->db->where('user_id', $user_id);
 		$this->db->delete($this->profile_table_name);
 	}
+
+	// --------------------------------------------------------------------
 }
 
 /* End of file users.php */
