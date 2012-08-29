@@ -43,7 +43,7 @@ $config['allow_registration'] = TRUE;
 $config['captcha_registration'] = TRUE;
 $config['email_activation'] = FALSE;
 $config['email_activation_expire'] = 60*60*24*2;
-$config['email_account_details'] = TRUE;
+$config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
 
 $config['username_min_length'] = 4;
@@ -109,6 +109,7 @@ $config['forgot_password_expire'] = 60*15;
 | 'captcha_case_sensitive' = Captcha case sensitive or not.
 |--------------------------------------------------------------------------
 */
+/*
 $config['captcha_path'] = 'captcha/';
 $config['captcha_fonts_path'] = 'captcha/fonts/5.ttf';
 $config['captcha_width'] = 200;
@@ -117,6 +118,17 @@ $config['captcha_font_size'] = 14;
 $config['captcha_grid'] = FALSE;
 $config['captcha_expire'] = 180;
 $config['captcha_case_sensitive'] = TRUE;
+*/
+
+/*
+|--------------------------------------------------------------------------
+| Cool Captcha settings
+|
+| Upgrades: Replace the contents of the captcha folder with the new version.
+| No editing required.
+|--------------------------------------------------------------------------
+*/
+$config['cool_captcha_folder'] = 'captcha';
 
 /*
 |--------------------------------------------------------------------------
