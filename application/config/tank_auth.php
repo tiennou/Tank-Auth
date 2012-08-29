@@ -124,11 +124,11 @@ $config['captcha_case_sensitive'] = TRUE;
 |--------------------------------------------------------------------------
 | Cool Captcha settings
 |
-| Modify Cool Captcha settings in captcha/captcha.php
-| Upgrades: Replace the contents of the captcha/ folder with the new version
+| Upgrades: Replace the contents of the captcha folder with the new version.
+| No editing required.
 |--------------------------------------------------------------------------
 */
-// No settings for Cool Captcha
+$config['cool_captcha_folder'] = 'captcha';
 
 /*
 |--------------------------------------------------------------------------

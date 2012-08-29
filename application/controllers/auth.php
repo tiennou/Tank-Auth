@@ -7,9 +7,8 @@ class Auth extends CI_Controller
 		parent::__construct();
 
 		$this->load->helper(array('form', 'url'));
-		$this->load->library('form_validation');
-		$this->load->library('security');
-		$this->load->library('tank_auth');
+		$this->load->library(array('form_validation', 'tank_auth'));
+		if(version_compare(CI_VERSION,'2.1.0','<')) $this->load->library('security');
 		$this->lang->load('tank_auth');
 	}
 
@@ -178,6 +177,7 @@ class Auth extends CI_Controller
 					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
 				}
 			}
+			
 			if ($captcha_registration) {
 				if ($use_recaptcha) {
 					$data['recaptcha_html'] = $this->_create_recaptcha();
@@ -491,26 +491,7 @@ class Auth extends CI_Controller
 	 */
 	function _create_captcha()
 	{
-		$this->load->helper('captcha');
-
-		$cap = create_captcha(array(
-			'img_path'		=> './'.$this->config->item('captcha_path', 'tank_auth'),
-			'img_url'		=> base_url().$this->config->item('captcha_path', 'tank_auth'),
-			'font_path'		=> './'.$this->config->item('captcha_fonts_path', 'tank_auth'),
-			'font_size'		=> $this->config->item('captcha_font_size', 'tank_auth'),
-			'img_width'		=> $this->config->item('captcha_width', 'tank_auth'),
-			'img_height'	=> $this->config->item('captcha_height', 'tank_auth'),
-			'show_grid'		=> $this->config->item('captcha_grid', 'tank_auth'),
-			'expiration'	=> $this->config->item('captcha_expire', 'tank_auth'),
-		));
-
-		// Save captcha params in session
-		$this->session->set_flashdata(array(
-				'captcha_word' => $cap['word'],
-				'captcha_time' => $cap['time'],
-		));
-
-		return $cap['image'];
+		return site_url().$this->config->item('cool_captcha_folder', 'tank_auth').'/captcha.php';
 	}
 
 	/**
@@ -521,22 +502,12 @@ class Auth extends CI_Controller
 	 */
 	function _check_captcha($code)
 	{
-		$time = $this->session->flashdata('captcha_time');
-		$word = $this->session->flashdata('captcha_word');
-
-		list($usec, $sec) = explode(" ", microtime());
-		$now = ((float)$usec + (float)$sec);
-
-		if ($now - $time > $this->config->item('captcha_expire', 'tank_auth')) {
-			$this->form_validation->set_message('_check_captcha', $this->lang->line('auth_captcha_expired'));
-			return FALSE;
-
-		} elseif (($this->config->item('captcha_case_sensitive', 'tank_auth') AND
-				$code != $word) OR
-				strtolower($code) != strtolower($word)) {
-			$this->form_validation->set_message('_check_captcha', $this->lang->line('auth_incorrect_captcha'));
+		session_start();
+		if($_SESSION['captcha'] != $_POST['captcha']){
+			$this->form_validation->set_message('_check_captcha', 'The Confirmation Code is wrong.');
 			return FALSE;
 		}
+		
 		return TRUE;
 	}
 

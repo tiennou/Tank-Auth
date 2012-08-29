@@ -46,6 +46,31 @@ $captcha->CreateImage();
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * SimpleCaptcha class
  *
@@ -53,10 +78,10 @@ $captcha->CreateImage();
 class SimpleCaptcha {
 
     /** Width of the image */
-    public $width  = 250;
+    public $width  = 200;
 
     /** Height of the image */
-    public $height = 80;
+    public $height = 70;
 
     /** Dictionary word file (empty for random text) */
     public $wordsFile = 'words/en.php';
@@ -122,12 +147,12 @@ class SimpleCaptcha {
 
     /** Wave configuracion in X and Y axes */
     public $Yperiod    = 12;
-    public $Yamplitude = 10;
-    public $Xperiod    = 9;
+    public $Yamplitude = 14;
+    public $Xperiod    = 11;
     public $Xamplitude = 5;
 
     /** letter rotation clockwise */
-    public $maxRotation = 20;
+    public $maxRotation = 8;
 
     /**
      * Internal image size factor (for better image quality)

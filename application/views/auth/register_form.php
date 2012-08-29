@@ -60,8 +60,7 @@ $captcha = array(
 		<td style="color: red;"><?php echo form_error($confirm_password['name']); ?></td>
 	</tr>
 
-	<?php if ($captcha_registration) {
-		if ($use_recaptcha) { ?>
+	<?php if ($captcha_registration) : if ($use_recaptcha) : ?>
 	<tr>
 		<td colspan="2">
 			<div id="recaptcha_image"></div>
@@ -81,20 +80,18 @@ $captcha = array(
 		<td style="color: red;"><?php echo form_error('recaptcha_response_field'); ?></td>
 		<?php echo $recaptcha_html; ?>
 	</tr>
-	<?php } else { ?>
+	<?php else : ?>
 	<tr>
-		<td colspan="3">
-			<p>Enter the code exactly as it appears:</p>
-			<?php echo $captcha_html; ?>
+		<td>&nbsp;</td>
+		<td>
+			<p>
+				Write the following word:<br>
+				<img src="<?php echo $captcha_html; ?>" id="captcha" /><br />
+			<a class="small" href="javascript:void(0)" onclick="document.getElementById('captcha').src='<?php echo site_url(); ?>captcha/captcha.php?'+Math.random(); document.getElementById('captcha-form').focus();" id="change-image">Not readable? Change text.</a><br/><br/><input type="text" name="captcha" id="captcha-form" autocomplete="off" /></p>
 		</td>
+		<td style="color: red;"><?php echo form_error('captcha'); ?><?php echo isset($errors['captcha']) ? $errors['captcha'] : ''; ?></td>
 	</tr>
-	<tr>
-		<td><?php echo form_label('Confirmation Code', $captcha['id']); ?></td>
-		<td><?php echo form_input($captcha); ?></td>
-		<td style="color: red;"><?php echo form_error($captcha['name']); ?></td>
-	</tr>
-	<?php }
-	} ?>
+	<?php endif; endif; ?>
 </table>
 <?php echo form_submit('register', 'Register'); ?>
 <?php echo form_close(); ?>
