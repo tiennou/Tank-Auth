@@ -8,6 +8,7 @@ class Auth extends CI_Controller
 
 		$this->load->helper(array('form', 'url'));
 		$this->load->library(array('form_validation', 'tank_auth'));
+		
 		if(version_compare(CI_VERSION,'2.1.0','<')) $this->load->library('security');
 		$this->lang->load('tank_auth');
 	}
@@ -126,7 +127,7 @@ class Auth extends CI_Controller
 		} else {
 			$use_username = $this->config->item('use_username', 'tank_auth');
 			if ($use_username) {
-				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|alpha_dash');
+				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|callback__check_username_blacklist|callback__check_username_exists');
 			}
 			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
@@ -547,6 +548,40 @@ class Auth extends CI_Controller
 			$this->form_validation->set_message('_check_recaptcha', $this->lang->line('auth_incorrect_captcha'));
 			return FALSE;
 		}
+		return TRUE;
+	}
+	
+	/**
+	 * Callback function. Blacklisted usernames.
+	 *
+	 */
+	 function _check_username_blacklist($str){
+		 $valid = TRUE;
+		 foreach($this->config->item('username_blacklist', 'tank_auth') as $val){
+			 if($str == $val){
+				 $this->form_validation->set_message('_check_username_blacklist', 'That username cannot be used.');
+				$valid = FALSE;
+				break; 
+			 }
+		 }
+		 
+		 return $valid;
+	 }
+	 
+	 /**
+	  * Callback function. Check if username exists.
+		*
+		*/
+	function _check_username_exists($str){
+		$this->load->database();
+		$query = $this->db->query("SELECT COUNT(*) count FROM {$this->config->item('db_table_prefix', 'tank_auth')}users WHERE username=? LIMIT 1", array($str));
+		$row = $query->row();
+		
+		if($row->count){
+			$this->form_validation->set_message('_check_username_exists', 'That username already exists');
+			return FALSE;
+		}
+		
 		return TRUE;
 	}
 

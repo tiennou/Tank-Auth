@@ -9,6 +9,40 @@
 */
 $config['website_name'] = 'Tank Auth Fork';
 $config['webmaster_email'] = 'enchance@gmail.com';
+$config['login_success'] = 'welcome';
+$config['register_redirect'] = '';
+
+// Blacklisted usernames
+$blacklist = array('admin', 'administrator', 'mod', 'moderator', 'root');
+$append = array('the', 'sys', 'system', 'site', 'super');
+$config['username_blacklist'] = $blacklist;
+foreach($blacklist as $val){
+	foreach($append as $v){
+		$config['username_blacklist'][] = $v.$val;
+	}
+}
+
+/*
+|--------------------------------------------------------------------------
+| Registration required fields
+|
+| This allows you to use fields from your 'user_profiles' table and require
+| them for registration. All custom fields will be serialized in the 'users' table
+| and once authenticated will be transferred to the 'user_profiles' table.
+|
+| Format: array('field_name', 'label', 'set_rules')
+|--------------------------------------------------------------------------
+*/
+// Uncomment for custom registration fields.
+$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
+$config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text');
+$config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>'); // Radio
+/*
+$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text'); // Text
+$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__register_dropdown_no_zero', 'dropdown', array('0'=>'- choose -', 'USA'=>'USA', 'Philippines'=>'Philippines')); // Dropdown: Give an option a value of '0' to mean that it has no value (so it will fail)
+$config['registration_fields'][] = array('test', 'Test', 'trim|numeric|callback__null_to_int', 'checkbox', 'I want money', TRUE); // Checkbox: TRUE if checked by default.
+$config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>'); // Radio
+*/
 
 /*
 |--------------------------------------------------------------------------
