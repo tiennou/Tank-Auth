@@ -90,6 +90,7 @@ CREATE  TABLE IF NOT EXISTS `users` (
   `new_password_requested` DATETIME NULL ,
   `new_email` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
   `new_email_key` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
+  `override` TINYINT NULL DEFAULT 0 COMMENT 'Checks the override table if necessary' ,
   `meta` VARCHAR(2000) NULL DEFAULT '' ,
   `last_ip` VARCHAR(40) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   `last_login` DATETIME NOT NULL ,
@@ -101,6 +102,73 @@ CREATE  TABLE IF NOT EXISTS `users` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_bin;
+
+
+-- -----------------------------------------------------
+-- Table `permissions`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `permissions` ;
+
+CREATE  TABLE IF NOT EXISTS `permissions` (
+  `permission_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `permission` VARCHAR(100) NULL ,
+  PRIMARY KEY (`permission_id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `roles`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `roles` ;
+
+CREATE  TABLE IF NOT EXISTS `roles` (
+  `role_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
+  `role` VARCHAR(50) NULL ,
+  PRIMARY KEY (`role_id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `role_permissions`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `role_permissions` ;
+
+CREATE  TABLE IF NOT EXISTS `role_permissions` (
+  `role_id` SMALLINT UNSIGNED NOT NULL ,
+  `permission_id` SMALLINT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`role_id`, `permission_id`) ,
+  INDEX `role_id_idx` (`role_id` ASC) ,
+  INDEX `task_id_idx` (`permission_id` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `user_roles`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `user_roles` ;
+
+CREATE  TABLE IF NOT EXISTS `user_roles` (
+  `user_id` INT UNSIGNED NOT NULL ,
+  `role_id` SMALLINT UNSIGNED NOT NULL ,
+  PRIMARY KEY (`user_id`, `role_id`) ,
+  INDEX `user_id_idx` (`user_id` ASC) ,
+  INDEX `role_id_idx` (`role_id` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `overrides`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `overrides` ;
+
+CREATE  TABLE IF NOT EXISTS `overrides` (
+  `user_id` INT UNSIGNED NOT NULL ,
+  `task_id` SMALLINT UNSIGNED NOT NULL ,
+  `allow` TINYINT(1) UNSIGNED NOT NULL ,
+  PRIMARY KEY (`user_id`, `task_id`) ,
+  INDEX `user_id_idx` (`user_id` ASC) ,
+  INDEX `task_id_idx` (`task_id` ASC) )
+ENGINE = InnoDB;
 
 
 
