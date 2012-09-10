@@ -1,4 +1,9 @@
 <?php
+
+include_once 'krumo/class.krumo.php';
+krumo($registration_fields);
+krumo($query);
+
 if ($use_username) {
 	$username = array(
 		'name'	=> 'username',
@@ -34,20 +39,22 @@ $captcha = array(
 	'id'	=> 'captcha',
 	'maxlength'	=> 8,
 );
+
 ?>
+
 <?php echo form_open($this->uri->uri_string()); ?>
 <table>
-	<?php if ($use_username) { ?>
+	<?php if ($use_username) : ?>
 	<tr>
 		<td><?php echo form_label('Username', $username['id']); ?></td>
 		<td><?php echo form_input($username); ?></td>
-		<td style="color: red;"><?php echo form_error($username['name']); ?><?php echo isset($errors[$username['name']])?$errors[$username['name']]:''; ?></td>
+		<td style="color: red;"><?php echo form_error($username['name']); ?><?php echo isset($errors[$username['name']]) ? $errors[$username['name']] : ''; ?></td>
 	</tr>
-	<?php } ?>
+	<?php endif; ?>
 	<tr>
 		<td><?php echo form_label('Email Address', $email['id']); ?></td>
 		<td><?php echo form_input($email); ?></td>
-		<td style="color: red;"><?php echo form_error($email['name']); ?><?php echo isset($errors[$email['name']])?$errors[$email['name']]:''; ?></td>
+		<td style="color: red;"><?php echo form_error($email['name']); ?><?php echo isset($errors[$email['name']]) ? $errors[$email['name']] : ''; ?></td>
 	</tr>
 	<tr>
 		<td><?php echo form_label('Password', $password['id']); ?></td>
@@ -59,6 +66,61 @@ $captcha = array(
 		<td><?php echo form_password($confirm_password); ?></td>
 		<td style="color: red;"><?php echo form_error($confirm_password['name']); ?></td>
 	</tr>
+	
+  <?php if($registration_fields) : foreach($registration_fields as $val) : ?>
+		<?php
+			list($name, $label,, $type) = $val;
+			$field = array('name'	=> $name, 'id'	=> $name, 'value' => set_value($name));
+		?>
+  	<?php if($type == 'text') : ?>
+			<?php
+				$field += array('size'=>30);
+				$attr = isset($val[4]) ? $val[4] : FALSE;
+				if($attr){
+					foreach($attr as $k=>$v){
+						$field[$k] = $v;
+					}
+				}
+			?>
+      <tr>
+        <td><?php echo form_label($label, $field['name']); ?></td>
+        <td><?php echo form_input($field); ?></td>
+        <td style="color: red;"><?php echo form_error($field['name']); ?><?php echo isset($errors[$field['name']]) ? $errors[$field['name']] : ''; ?></td>
+      </tr>
+  	<?php elseif($type == 'dropdown') : ?>
+      <tr>
+        <td><?php echo form_label($label, $name); ?></td>
+        <td><?php echo form_dropdown($name, $val[4]); ?></td>
+        <td style="color: red;"><?php echo form_error($name); ?><?php echo isset($errors[$name]) ? $errors[$name] : ''; ?></td>
+      </tr>
+  	<?php elseif($type == 'checkbox') : ?>
+      <tr valign="top">
+        <td><?php echo $label; ?></td>
+				<!--
+        <td><?php echo form_checkbox(array('name'=>$name, 'id'=>$name), 1, set_checkbox($name, 1, isset($name) ? $name : FALSE)) . ' ' . form_label($val[4], $name); ?></td>
+				-->
+				<td><?php echo form_checkbox(array('name'=>$name, 'id'=>$name), 1, set_checkbox($name, 1, isset($val[5]) ? $val[5] : FALSE)) . ' ' . form_label($val[4], $name); ?></td>
+        <td style="color: red;"><?php echo form_error($name); ?><?php echo isset($errors[$name]) ? $errors[$name] : ''; ?></td>
+      </tr>
+  	<?php elseif($type == 'radio') : ?>
+      <tr valign="top">
+        <td><?php echo $label; ?></td>
+        <td>
+					<?php
+						$open_tag = isset($val[5]) ? $val[5] : '<span>';
+						$close_tag = isset($val[6]) ? $val[6] : '</span>';
+						foreach($val[4] as $key=>$radio_label){
+							echo $open_tag.'<label>'.form_radio($name, $key, set_radio($name, $key)).' '.$radio_label.'</label>'.$close_tag;
+						}
+					?>
+				</td>
+        <td style="color: red;"><?php echo form_error($name); ?><?php echo isset($errors[$name]) ? $errors[$name] : ''; ?></td>
+      </tr>
+    <?php endif; ?>
+  
+  <?php endforeach; endif; ?>	
+	
+	
 
 	<?php if ($captcha_registration) : if ($use_recaptcha) : ?>
 	<tr>

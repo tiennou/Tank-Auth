@@ -10,8 +10,10 @@ To do:
 1. *Replace default captcha with [Cool Captcha](http://code.google.com/p/cool-php-captcha/)* - **complete**
 2. Add custom fields to the registration page
 3. RBAC integration
-4. Integrate [Fieldigniter](https://github.com/enchance/Fieldigniter) for generating fields
-5. Buy myself an ice cream
+4. Autocreate accounts
+5. Integrate [Fieldigniter](https://github.com/enchance/Fieldigniter) for generating fields
+6. Buy myself an ice cream
+7. CI authentication for AJAX fields
 
 This is a fork of [Tank Auth](http://www.konyukhov.com/soft/tank_auth/) by Ilya Konyukhov.
 

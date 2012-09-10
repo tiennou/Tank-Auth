@@ -125,16 +125,17 @@ class Users extends CI_Model
 	 * @param	bool
 	 * @return	array
 	 */
-	function create_user($data, $activated = TRUE)
+	function create_user($data, $activated)
 	{
 		$data['created'] = date('Y-m-d H:i:s');
 		$data['activated'] = $activated ? 1 : 0;
 
 		if ($this->db->insert($this->table_name, $data)) {
 			$user_id = $this->db->insert_id();
-			if ($activated)	$this->create_profile($user_id);
+			if ($activated)	$this->create_profile($user_id, $data['meta']);
 			return array('user_id' => $user_id);
 		}
+		
 		return NULL;
 	}
 
@@ -375,10 +376,19 @@ class Users extends CI_Model
 	 * @param	int
 	 * @return	bool
 	 */
-	private function create_profile($user_id)
+	private function create_profile($user_id, $meta)
 	{
-		$this->db->set('user_id', $user_id);
-		return $this->db->insert($this->profile_table_name);
+		//$this->db->set('id', $user_id);
+		$data['id'] = $user_id;
+		if($meta){
+			$meta = unserialize($meta);
+			foreach($meta as $key=>$val){
+				if($val === '1' || $val === '0') $meta[$key] = (int)$val;
+			}
+			$data = array_merge($data, $meta);			
+		}
+		
+		return $this->db->insert($this->profile_table_name, $data);
 	}
 
 	/**
@@ -389,9 +399,18 @@ class Users extends CI_Model
 	 */
 	private function delete_profile($user_id)
 	{
-		$this->db->where('user_id', $user_id);
+		$this->db->where('id', $user_id);
 		$this->db->delete($this->profile_table_name);
 	}
+	
+	/**
+	 * Gets the datatype of a table
+	 */
+	public function get_profile_datatypes(){
+		$query = $this->db->query('SELECT column_name, data_type FROM information_schema.columns WHERE table_name=?', array($this->profile_table_name));
+		return $query->result_array();
+	}
+	
 }
 
 /* End of file users.php */

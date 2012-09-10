@@ -14,11 +14,25 @@ $config['register_redirect'] = '';
 
 // Blacklisted usernames
 $blacklist = array('admin', 'administrator', 'mod', 'moderator', 'root');
-$append = array('the', 'sys', 'system', 'site', 'super');
+$prepend = array('the', 'sys', 'system', 'site', 'super');
+$exceptions = array('admin');
+
+// create blacklisted names
 $config['username_blacklist'] = $blacklist;
 foreach($blacklist as $val){
-	foreach($append as $v){
-		$config['username_blacklist'][] = $v.$val;
+	foreach($prepend as $v){
+		$username = $v.$val;
+		$config['username_blacklist'][] = $username;		
+	}
+}
+
+// remove from blacklisted names (allow certain names based on $exceptions)
+foreach($config['username_blacklist'] as $key=>$name){
+	foreach($exceptions as $exc){
+		if($exc == $name){
+			unset($config['username_blacklist'][$key]);
+			break;
+		}
 	}
 }
 
@@ -30,18 +44,19 @@ foreach($blacklist as $val){
 | them for registration. All custom fields will be serialized in the 'users' table
 | and once authenticated will be transferred to the 'user_profiles' table.
 |
-| Format: array('field_name', 'label', 'set_rules')
+| $attr (optional) is an array of attributes for input="text" fields (e.g. array('class'=>'myclass'))
+| Format: array('field_name', 'label', 'set_rules', 'text', $attr = array())
 |--------------------------------------------------------------------------
 */
 // Uncomment for custom registration fields.
 $config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
-$config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text');
-$config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>'); // Radio
+$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
 /*
-$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text'); // Text
-$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__register_dropdown_no_zero', 'dropdown', array('0'=>'- choose -', 'USA'=>'USA', 'Philippines'=>'Philippines')); // Dropdown: Give an option a value of '0' to mean that it has no value (so it will fail)
-$config['registration_fields'][] = array('test', 'Test', 'trim|numeric|callback__null_to_int', 'checkbox', 'I want money', TRUE); // Checkbox: TRUE if checked by default.
+$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
+$config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text', array('class'=>'something'));
 $config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>'); // Radio
+$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines')); // char(2) Give a value of '0' to mean that it has no value (so it will fail).
+$config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkbox', 'I want money', TRUE); // Checkbox: TRUE if checked by default.
 */
 
 /*

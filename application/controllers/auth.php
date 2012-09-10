@@ -30,7 +30,7 @@ class Auth extends CI_Controller
 	function login()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect('');
+			redirect($this->config->item('login_success', 'tank_auth'));
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('/auth/send_again/');
@@ -68,7 +68,7 @@ class Auth extends CI_Controller
 						$this->form_validation->set_value('remember'),
 						$data['login_by_username'],
 						$data['login_by_email'])) {								// success
-					redirect('');
+					redirect($this->config->item('login_success', 'tank_auth'));
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -116,7 +116,7 @@ class Auth extends CI_Controller
 	function register()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect('');
+			redirect($this->config->item('register_redirect', 'tank_auth'));
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('/auth/send_again/');
@@ -130,8 +130,18 @@ class Auth extends CI_Controller
 				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|callback__check_username_blacklist|callback__check_username_exists');
 			}
 			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
 			$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|xss_clean|matches[password]');
+			
+			// Check for additional fields
+			$registration_fields = (bool)$this->config->item('registration_fields', 'tank_auth') ? $this->config->item('registration_fields', 'tank_auth') : array();
+			if($registration_fields){
+				foreach($registration_fields as $val){
+					$data['registration_fields'][] = $val;
+					list($name, $label, $rules) = $val;
+					$this->form_validation->set_rules($name, $label, $rules);
+				}
+			}
 
 			$captcha_registration	= $this->config->item('captcha_registration', 'tank_auth');
 			$use_recaptcha			= $this->config->item('use_recaptcha', 'tank_auth');
@@ -147,11 +157,33 @@ class Auth extends CI_Controller
 			$email_activation = $this->config->item('email_activation', 'tank_auth');
 
 			if ($this->form_validation->run()) {								// validation ok
+				
+				// Custom registration fields
+				if(count($this->config->item('registration_fields', 'tank_auth'))){
+					//$datatypes = $this->tank_auth->get_profile_datatypes();
+					foreach($this->config->item('registration_fields', 'tank_auth') as $val){
+						$name = $val[0];
+						$value = $this->form_validation->set_value($name);
+						$custom[$name] = $value;
+					}
+					
+					//Remove all NULL values so MySQL will use the default value
+					foreach($custom as $key=>$val){
+						if(is_null($val)) unset($custom[$key]);
+					}
+					
+					$custom = serialize($custom);
+				}
+				else {
+					$custom = '';
+				}
+			
 				if (!is_null($data = $this->tank_auth->create_user(
 						$use_username ? $this->form_validation->set_value('username') : '',
 						$this->form_validation->set_value('email'),
 						$this->form_validation->set_value('password'),
-						$email_activation))) {									// success
+						$email_activation,
+						$custom))) {									// success
 
 					$data['site_name'] = $this->config->item('website_name', 'tank_auth');
 
@@ -186,6 +218,8 @@ class Auth extends CI_Controller
 					$data['captcha_html'] = $this->_create_captcha();
 				}
 			}
+			
+			$data['query'] = $this->tank_auth->get_profile_datatypes(); // Debug
 			$data['use_username'] = $use_username;
 			$data['captcha_registration'] = $captcha_registration;
 			$data['use_recaptcha'] = $use_recaptcha;
@@ -555,7 +589,7 @@ class Auth extends CI_Controller
 	 * Callback function. Blacklisted usernames.
 	 *
 	 */
-	 function _check_username_blacklist($str){
+	function _check_username_blacklist($str){
 		 $valid = TRUE;
 		 foreach($this->config->item('username_blacklist', 'tank_auth') as $val){
 			 if($str == $val){
@@ -579,6 +613,30 @@ class Auth extends CI_Controller
 		
 		if($row->count){
 			$this->form_validation->set_message('_check_username_exists', 'That username already exists');
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	/**
+	 * Zero ot allowed
+	 */
+	function _not_zero($str){
+		if($str == '0'){
+			$this->form_validation->set_message('_not_zero', 'The %s field is required.');
+			return FALSE;
+		}
+		
+		return TRUE;
+	}
+	
+	/**
+	 * Null not allowed
+	 */
+	function _not_null($str){
+		if(is_null($str)){
+			$this->form_validation->set_message('_not_null', 'The %s field is required.');
 			return FALSE;
 		}
 		

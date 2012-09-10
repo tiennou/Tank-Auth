@@ -159,7 +159,7 @@ class Tank_auth
 	 * @param	bool
 	 * @return	array
 	 */
-	function create_user($username, $email, $password, $email_activation)
+	function create_user($username, $email, $password, $email_activation, $custom)
 	{
 		if ((strlen($username) > 0) AND !$this->ci->users->is_username_available($username)) {
 			$this->error = array('username' => 'auth_username_in_use');
@@ -180,6 +180,8 @@ class Tank_auth
 				'email'		=> $email,
 				'last_ip'	=> $this->ci->input->ip_address(),
 			);
+			
+			if($custom) $data['meta'] = $custom;
 
 			if ($email_activation) {
 				$data['new_email_key'] = md5(rand().microtime());
@@ -638,6 +640,28 @@ class Tank_auth
 					$login,
 					$this->ci->config->item('login_attempt_expire', 'tank_auth'));
 		}
+	}
+	
+	
+	/**
+	 * Gets the datatype of a table adn converts it to the format $arr['column_name'] = 'datatype'
+	 */
+	public function get_profile_datatypes(){
+		$result_array = $this->ci->users->get_profile_datatypes();
+		return $this->multi_to_assoc($result_array);
+	}
+	
+	/**
+	 * Converts a multidimensional array (3 levels only) into a single associative
+	 * array where $arr[0] is the key and $arr[1] is the value.
+	 */
+	public function multi_to_assoc($result_array){
+		foreach($result_array as $val){
+			$val = array_values($val);
+			$arr[$val[0]] = $val[1];
+		}
+		
+		return $arr;
 	}
 }
 
