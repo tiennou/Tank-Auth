@@ -112,6 +112,7 @@ DROP TABLE IF EXISTS `permissions` ;
 CREATE  TABLE IF NOT EXISTS `permissions` (
   `permission_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `permission` VARCHAR(100) NULL ,
+  `description` VARCHAR(160) NULL ,
   PRIMARY KEY (`permission_id`) )
 ENGINE = InnoDB;
 
@@ -124,6 +125,8 @@ DROP TABLE IF EXISTS `roles` ;
 CREATE  TABLE IF NOT EXISTS `roles` (
   `role_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `role` VARCHAR(50) NULL ,
+  `full` VARCHAR(50) NULL ,
+  `default` TINYINT(1) NULL ,
   PRIMARY KEY (`role_id`) )
 ENGINE = InnoDB;
 
@@ -163,11 +166,11 @@ DROP TABLE IF EXISTS `overrides` ;
 
 CREATE  TABLE IF NOT EXISTS `overrides` (
   `user_id` INT UNSIGNED NOT NULL ,
-  `task_id` SMALLINT UNSIGNED NOT NULL ,
+  `permission_id` SMALLINT UNSIGNED NOT NULL ,
   `allow` TINYINT(1) UNSIGNED NOT NULL ,
-  PRIMARY KEY (`user_id`, `task_id`) ,
+  PRIMARY KEY (`user_id`, `permission_id`) ,
   INDEX `user_id_idx` (`user_id` ASC) ,
-  INDEX `task_id_idx` (`task_id` ASC) )
+  INDEX `task_id_idx` (`permission_id` ASC) )
 ENGINE = InnoDB;
 
 
@@ -175,3 +178,13 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `roles`
+-- -----------------------------------------------------
+START TRANSACTION;
+INSERT INTO `roles` (`role_id`, `role`, `full`, `default`) VALUES (1, 'admin', 'Administrator', 0);
+INSERT INTO `roles` (`role_id`, `role`, `full`, `default`) VALUES (2, 'mod', 'Moderator', 0);
+INSERT INTO `roles` (`role_id`, `role`, `full`, `default`) VALUES (3, 'user', 'User', 1);
+
+COMMIT;
