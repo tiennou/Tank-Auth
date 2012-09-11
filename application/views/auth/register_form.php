@@ -1,8 +1,9 @@
 <?php
 
 include_once 'krumo/class.krumo.php';
-krumo($registration_fields);
-krumo($query);
+//krumo($registration_fields);
+//krumo($query);
+//krumo($debug);
 
 if ($use_username) {
 	$username = array(

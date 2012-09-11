@@ -33,7 +33,7 @@ class Tank_auth
 		// Try to autologin
 		$this->autologin();
 	}
-
+	
 	/**
 	 * Login user on the site. Return TRUE if login is successful
 	 * (user exists and activated, password is correct), otherwise FALSE.
@@ -642,7 +642,6 @@ class Tank_auth
 		}
 	}
 	
-	
 	/**
 	 * Gets the datatype of a table adn converts it to the format $arr['column_name'] = 'datatype'
 	 */
@@ -652,7 +651,7 @@ class Tank_auth
 	}
 	
 	/**
-	 * Converts a multidimensional array (3 levels only) into a single associative
+	 * Converts a multidimensional array (2 levels only) into a single associative
 	 * array where $arr[0] is the key and $arr[1] is the value.
 	 */
 	public function multi_to_assoc($result_array){
@@ -663,6 +662,78 @@ class Tank_auth
 		
 		return $arr;
 	}
+	
+	/**
+	 * User has permission to do an action
+	 *
+	 * @param string $permission: The permission you want to check for from the `permissions` table
+	 * @return bool
+	 */
+	public function permit($permission){
+		$user_id = $this->ci->session->userdata('user_id');
+		$roles = $this->get_roles($user_id);
+		$override = $this->ci->users->get_permission_overrides($user_id);
+		$allow = FALSE;
+		
+		// Check role permissions
+		foreach($roles as $val){
+			$role_id = $val['role_id'];
+			foreach($this->ci->users->get_role_permissions($role_id) as $val){
+				if($val['permission'] == $permission){
+					$allow = TRUE;
+					break 2;
+				}
+			}
+		}
+		
+		// Check if there are overrides and overturn the result as needed
+		$overrides = $this->ci->users->get_permission_overrides($user_id);
+		if($overrides){
+			foreach($overrides as $val){
+				if($val['permission'] == $permission){
+					$allow = (bool)$val['allow'];
+					break;
+				}
+			}
+		}
+		
+		return $allow;
+	}
+	
+	/**
+	 * Get a user's roles
+	 *
+	 * @param int $user_id
+	 * @return array
+	 */
+	public function get_roles(){
+		$user_id = $this->ci->session->userdata('user_id');
+		return $this->ci->users->get_roles($user_id);
+	}
+	
+	/**
+	 * Overriding permissions method
+	 */
+	public function add_override($user_id, $permission, $allow){
+		return $this->ci->users->add_override($user_id, $permission, $allow);
+	}
+	public function remove_override($user_id, $permission){
+		return $this->ci->users->remove_override($user_id, $permission);
+	}
+	
+	/**
+	 * Role management methods
+	 */
+	public function add_role($user_id, $role){
+		return $this->ci->users->add_role($user_id, $role);
+	}
+	public function remove_role($user_id, $role){
+		return $this->ci->users->remove_role($user_id, $role);
+	}
+	public function change_role($user_id, $old, $new){
+		return $this->ci->users->change_role($user_id, $old, $new);
+	}
+
 }
 
 /* End of file Tank_auth.php */

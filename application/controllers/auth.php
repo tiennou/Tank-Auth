@@ -178,6 +178,7 @@ class Auth extends CI_Controller
 					$custom = '';
 				}
 			
+				// Create the user here
 				if (!is_null($data = $this->tank_auth->create_user(
 						$use_username ? $this->form_validation->set_value('username') : '',
 						$this->form_validation->set_value('email'),
@@ -219,7 +220,15 @@ class Auth extends CI_Controller
 				}
 			}
 			
-			$data['query'] = $this->tank_auth->get_profile_datatypes(); // Debug
+			// Debug
+			/*
+			$this->load->database();
+			$query = $this->db->query('SELECT meta FROM users WHERE id=1');
+			$data['query'] = $query->row_array();
+			//$data['query'] = $this->tank_auth->get_profile_datatypes();
+			*/
+			
+			//$data['debug'] = $this->tank_auth->debug('14');
 			$data['use_username'] = $use_username;
 			$data['captcha_registration'] = $captcha_registration;
 			$data['use_recaptcha'] = $use_recaptcha;

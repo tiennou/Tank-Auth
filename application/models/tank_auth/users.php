@@ -14,6 +14,7 @@ class Users extends CI_Model
 {
 	private $table_name			= 'users';			// user accounts
 	private $profile_table_name	= 'user_profiles';	// user profiles
+	private $dbprefix;
 
 	function __construct()
 	{
@@ -22,6 +23,7 @@ class Users extends CI_Model
 		$ci =& get_instance();
 		$this->table_name			= $ci->config->item('db_table_prefix', 'tank_auth').$this->table_name;
 		$this->profile_table_name	= $ci->config->item('db_table_prefix', 'tank_auth').$this->profile_table_name;
+		$this->dbprefix = $ci->config->item('db_table_prefix', 'tank_auth');
 	}
 
 	/**
@@ -167,7 +169,7 @@ class Users extends CI_Model
 			$this->db->where('id', $user_id);
 			$this->db->update($this->table_name);
 
-			$this->create_profile($user_id);
+			$this->create_profile($user_id, $this->get_user_meta($user_id));
 			return TRUE;
 		}
 		return FALSE;
@@ -194,13 +196,14 @@ class Users extends CI_Model
 	 */
 	function delete_user($user_id)
 	{
-		$this->db->where('id', $user_id);
-		$this->db->delete($this->table_name);
-		if ($this->db->affected_rows() > 0) {
-			$this->delete_profile($user_id);
-			return TRUE;
-		}
-		return FALSE;
+		$this->db->trans_start();
+		$this->db->query("DELETE FROM {$this->table_name} WHERE id=?", array($user_id));
+		$this->db->query("DELETE FROM {$this->dbprefix}user_roles WHERE user_id=?", array($user_id));
+		$this->db->query("DELETE FROM {$this->dbprefix}overrides WHERE user_id=?", array($user_id));
+		$this->db->query("DELETE FROM {$this->profile_table_name} WHERE id=?", array($user_id));
+		$this->db->trans_complete();
+		
+		return $this->db->trans_status() ? TRUE : FALSE;
 	}
 
 	/**
@@ -378,7 +381,6 @@ class Users extends CI_Model
 	 */
 	private function create_profile($user_id, $meta)
 	{
-		//$this->db->set('id', $user_id);
 		$data['id'] = $user_id;
 		if($meta){
 			$meta = unserialize($meta);
@@ -388,19 +390,35 @@ class Users extends CI_Model
 			$data = array_merge($data, $meta);			
 		}
 		
+		// If there's no admin then make this person the admin
+		$query = $this->db->query("SELECT role_id FROM {$this->dbprefix}user_roles WHERE role_id=1 LIMIT 1");
+		if($query->num_rows() > 0){
+			// If admin exists, use the default role
+			$query = $this->db->query("SELECT role_id FROM {$this->dbprefix}roles WHERE `default`=? LIMIT 1", array(1));
+			$row = $query->row_array();
+			$this->db->query("INSERT INTO {$this->dbprefix}user_roles (user_id, role_id) VALUES (?, ?)", array($user_id, $row['role_id']));
+		}
+		else {
+			// User is admin
+			$this->db->query("INSERT INTO {$this->dbprefix}user_roles (user_id, role_id) VALUES (?, ?)", array($user_id, 1));
+		}
+		
 		return $this->db->insert($this->profile_table_name, $data);
 	}
-
+		
 	/**
-	 * Delete user profile
-	 *
-	 * @param	int
-	 * @return	void
+	 * Checks if a role exists
 	 */
-	private function delete_profile($user_id)
-	{
-		$this->db->where('id', $user_id);
-		$this->db->delete($this->profile_table_name);
+	private function role_exists($role){
+		if(is_int($role)){
+			$query = $this->db->query("SELECT role_id FROM {$this->dbprefix}roles WHERE role_id=? LIMIT 1", array($role));
+		}
+		elseif(is_string($role)){
+			$role = trim($role);
+			$query = $this->db->query("SELECT role FROM {$this->dbprefix}roles WHERE role=? LIMIT 1", array($role));
+		}
+		
+		return (bool)$query->num_rows();
 	}
 	
 	/**
@@ -411,6 +429,195 @@ class Users extends CI_Model
 		return $query->result_array();
 	}
 	
+	/**
+	 *
+	 */
+	private function get_user_meta($user_id){
+		$query = $this->db->query('SELECT meta FROM ? WHERE id=?', array($this->table_name, $user_id));
+		$str = $query->row_array();
+		return $str['meta'];
+	}
+	
+	/**
+	 * Gets the permissions assigned to a role
+	 *
+	 * @param int $role_id
+	 */
+	public function get_role_permissions($role_id){
+		$query = $this->db->query("SELECT permission FROM {$this->dbprefix}permissions INNER JOIN {$this->dbprefix}role_permissions USING(permission_id) WHERE role_id=?", array($role_id));
+		return $query->result_array();
+	}
+	
+	/**
+	 * Get any overrides a user may have
+	 */
+	public function get_permission_overrides($user_id){
+		$query = $this->db->query("SELECT permission, allow FROM {$this->dbprefix}permissions INNER JOIN {$this->dbprefix}overrides USING(permission_id) WHERE user_id=?", array($user_id));
+		return $query->result_array();
+	}
+	
+	/**
+	 * Returns a multidimensional array with info on the user's roles in associative format
+	 * Keys: 'role_id', 'role', 'full', 'default'
+	 * 
+	 */
+	public function get_roles($user_id){
+		$query = $this->db->query("SELECT b.role_id, b.role, b.full, b.default FROM {$this->dbprefix}user_roles a INNER JOIN {$this->dbprefix}roles b USING(role_id) WHERE a.user_id=?", array($user_id));
+		return $query->result_array();
+	}
+	
+	/**
+	 * Add permission to the `overrides` table
+	 */
+	public function add_override($user_id, $permission, $allow){
+		if(is_string($permission)){
+			$permission_id = $this->get_permission_id($permission);
+			$this->db->query("INSERT IGNORE {$this->dbprefix}overrides VALUES (?, ?, ?)", array($user_id, $permission_id, $allow));
+		}
+		elseif(is_array($permission)){
+			$this->db->trans_start();
+			foreach($permission as $val){
+				$permission_id = $this->get_permission_id($val);
+				$this->db->query("INSERT IGNORE {$this->dbprefix}overrides VALUES (?, ?, ?)", array($user_id, $permission_id, $allow));
+			}
+			$this->db->trans_complete();
+			
+			return $this->db->trans_status();
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
+	/**
+	 * Remove permission from the `overrides` table
+	 */
+	public function remove_override($user_id, $permission){
+		if(is_string($permission)){
+			$permission_id = $this->get_permission_id($permission);
+			$this->db->query("DELETE FROM {$this->dbprefix}overrides WHERE user_id=? AND permission_id=?", array($user_id, $permission_id));
+			
+			return $this->db->trans_status();
+		}
+		elseif(is_array($permission)){
+			$this->db->trans_start();
+			foreach($permission as $val){
+				$permission_id = $this->get_permission_id($val);
+				$this->db->query("DELETE FROM {$this->dbprefix}overrides WHERE user_id=? AND permission_id=?", array($user_id, $permission_id));
+			}
+			$this->db->trans_complete();
+			
+			return $this->db->trans_status();
+		}
+		else {
+			return FALSE;
+		}
+	}
+	
+	/**
+	 * Get the permission_id of any permission
+	 * @param string $permission
+	 */
+	public function get_permission_id($permission){
+		$query = $this->db->query("SELECT permission_id FROM {$this->dbprefix}permissions WHERE permission=? LIMIT 1", array($permission));
+		$row = $query->row_array();
+		
+		return $row['permission_id'];
+	}
+	
+	/**
+	 * Add role to user
+	 * @param int $user_id
+	 * @param multi $role: int `role_id` or string `role` (not full)
+	 */
+	public function add_role($user_id, $role){
+		// Do nothing if $role is int
+		if(is_string($role)){
+			$role = trim($role);
+			$role = $this->get_role_id($role);
+		}
+		
+		return $this->db->query("INSERT IGNORE INTO {$this->dbprefix}user_roles VALUES (?, ?)", array($user_id, $role));
+	}
+	
+	/**
+	 * Remove role from user. Cannot remove role if user only has 1 role
+	 * @param int $user_id
+	 * @param multi $role: int `role_id` or string `role` (not full)
+	 */
+	public function remove_role($user_id, $role){
+		if($this->has_role($user_id, $role)){			
+			// If there's only 1 role then removal is denied
+			$query = $this->db->query("SELECT COUNT(*) count FROM {$this->dbprefix}user_roles WHERE user_id=?", array($user_id));
+			$row = $query->row_array();
+			$count = $row['count'];
+			if($count > 1){
+				// Do nothing if $role is int
+				if(is_string($role)){
+					$role = trim($role);
+					$role = $this->get_role_id($role);
+				}
+				
+				return $this->db->query("DELETE FROM {$this->dbprefix}user_roles WHERE user_id=? AND role_id=?", array($user_id, $role));
+			}
+			else {
+				return FALSE;
+			}
+		}
+		else {
+			return TRUE;
+		}
+	}
+	
+	/**
+	 * Change a user's role for another
+	 */
+	public function change_role($user_id, $old, $new){
+		// Do nothing if $role is int
+		if(is_string($old)){
+				$old = trim($old);
+				$old = $this->get_role_id($old);
+		}
+		if(is_string($new)){
+				$new = trim($new);
+				$new = $this->get_role_id($new);
+		}
+		
+		return $this->db->query("UPDATE {$this->dbprefix}user_roles SET role_id=? WHERE role_id=? AND user_id=?", array($new, $old, $user_id));
+	}
+	
+	/**
+	 * Does user already have this role?
+	 *
+	 * @param int $user_id
+	 * @param multi $role: int `role_id` or string `role` (not full)
+	 * @return bool
+	 */
+	private function has_role($user_id, $role){
+		// Do nothing if $role is int
+		if(is_string($role)){
+			// Get the role_id of that string
+			$role = trim($role);
+			$query = $this->db->query("SELECT role_id FROM {$this->dbprefix}roles WHERE role=? LIMIT 1", array($role));
+			$row = $query->row_array();
+			$role = $row['role_id'];
+		}
+		
+		$query = $this->db->query("SELECT role_id FROM {$this->dbprefix}user_roles WHERE user_id=? AND role_id=? LIMIT 1", array($user_id, $role));
+		return $query->num_rows() ? TRUE : FALSE;
+	}
+	
+	/**
+	 * Get the role_id of a role
+	 *
+	 * @param string $role: The `role` value of the role
+	 */
+	private function get_role_id($role){
+		$query = $this->db->query("SELECT role_id FROM roles WHERE role=?", array($role));
+		$row = $query->row_array();
+		
+		return $row['role_id'];
+	}
 }
 
 /* End of file users.php */
