@@ -433,9 +433,9 @@ class Users extends CI_Model
 	 *
 	 */
 	private function get_user_meta($user_id){
-		$query = $this->db->query('SELECT meta FROM ? WHERE id=?', array($this->table_name, $user_id));
-		$str = $query->row_array();
-		return $str['meta'];
+		$q = $this->db->query("SELECT meta FROM {$this->table_name} WHERE id=?", array($user_id));
+		$row = $q->row_array();
+		return $row['meta'];
 	}
 	
 	/**
@@ -640,7 +640,7 @@ class Users extends CI_Model
 	 * @param string $role: The `role` value of the role
 	 */
 	private function get_role_id($role){
-		$query = $this->db->query("SELECT role_id FROM roles WHERE role=?", array($role));
+		$query = $this->db->query("SELECT role_id FROM {$this->dbprefix}roles WHERE role=?", array($role));
 		$row = $query->row_array();
 		
 		return $row['role_id'];
