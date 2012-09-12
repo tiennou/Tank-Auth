@@ -618,6 +618,15 @@ class Users extends CI_Model
 		
 		return $row['role_id'];
 	}
+	
+	/**
+	 *
+	 */
+	public function get_user_profile($user_id){
+		$query = $this->db->query("SELECT * FROM {$this->profile_table_name} WHERE id=? LIMIT 1", array($user_id));
+		return $query->row_array();
+	}
+	
 }
 
 /* End of file users.php */

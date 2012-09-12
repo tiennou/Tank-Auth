@@ -68,10 +68,15 @@ class Tank_auth
 						$this->error = array('banned' => $user->ban_reason);
 
 					} else {
+						// Get data from the profile
+						$user_profile = $this->ci->users->get_user_profile($user->id);
+						
+						// Save to session
 						$this->ci->session->set_userdata(array(
 								'user_id'	=> $user->id,
 								'username'	=> $user->username,
 								'status'	=> ($user->activated == 1) ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED,
+								'user_profile'=> $user_profile
 						));
 
 						if ($user->activated == 0) {							// fail - not activated
@@ -732,6 +737,14 @@ class Tank_auth
 	}
 	public function change_role($user_id, $old, $new){
 		return $this->ci->users->change_role($user_id, $old, $new);
+	}
+	
+	/**
+	 *
+	 */
+	public function get_user_profile($user_id = NULL){
+		$user_id = is_null($user_id) ? $this->session->userdata('user_id') : $user_id;
+		return $this->ci->users->get_user_profile($user_id);
 	}
 
 }

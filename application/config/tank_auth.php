@@ -48,14 +48,12 @@ foreach($config['username_blacklist'] as $key=>$name){
 | Format: array('field_name', 'label', 'set_rules', 'text', $attr = array())
 |--------------------------------------------------------------------------
 */
-// Uncomment for custom registration fields.
-$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
-$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
+// Uncomment for custom registration fields. Add as many as you like and change the names, labels and other details as needed.
 /*
 $config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
 $config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text', array('class'=>'something'));
 $config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>'); // Radio
-$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines')); // char(2) Give a value of '0' to mean that it has no value (so it will fail).
+$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines')); // Make the initial value '0' so the field will fail if selected
 $config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkbox', 'I want money', TRUE); // Checkbox: TRUE if checked by default.
 */
 
