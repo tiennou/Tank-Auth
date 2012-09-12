@@ -93,6 +93,9 @@ $config['email_activation_expire'] = 60*60*24*2;
 $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
 
+// If you want to manually approve all activated and non-activated accounts, set this to FALSE;
+$config['auto_acct_approval'] = TRUE;
+
 $config['username_min_length'] = 4;
 $config['username_max_length'] = 20;
 $config['password_min_length'] = 4;

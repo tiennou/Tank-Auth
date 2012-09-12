@@ -159,7 +159,8 @@ class Auth extends CI_Controller
 			if ($this->form_validation->run()) {								// validation ok
 				
 				// Custom registration fields
-				if(count($this->config->item('registration_fields', 'tank_auth'))){
+				$registration_fields = (bool)$this->config->item('registration_fields', 'tank_auth') ? $this->config->item('registration_fields', 'tank_auth') : array();
+				if($registration_fields){
 					//$datatypes = $this->tank_auth->get_profile_datatypes();
 					foreach($this->config->item('registration_fields', 'tank_auth') as $val){
 						$name = $val[0];

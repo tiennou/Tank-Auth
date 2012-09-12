@@ -70,13 +70,15 @@ class Tank_auth
 					} else {
 						// Get data from the profile
 						$user_profile = $this->ci->users->get_user_profile($user->id);
+						$user_roles = $this->ci->users->get_roles($user->id);
 						
 						// Save to session
 						$this->ci->session->set_userdata(array(
 								'user_id'	=> $user->id,
 								'username'	=> $user->username,
 								'status'	=> ($user->activated == 1) ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED,
-								'user_profile'=> $user_profile
+								'user_profile'=>$user_profile,
+								'roles'=>$user_roles
 						));
 
 						if ($user->activated == 0) {							// fail - not activated
@@ -124,7 +126,8 @@ class Tank_auth
 	}
 
 	/**
-	 * Check if user logged in. Also test if user is activated or not.
+	 * Check if user logged in. Also test if user is activated and approved.
+	 * User can log in only if acct has been approved.
 	 *
 	 * @param	bool
 	 * @return	bool
@@ -133,7 +136,7 @@ class Tank_auth
 	{
 		return $this->ci->session->userdata('status') === ($activated ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED);
 	}
-
+	
 	/**
 	 * Get user_id
 	 *
@@ -184,6 +187,7 @@ class Tank_auth
 				'password'	=> $hashed_password,
 				'email'		=> $email,
 				'last_ip'	=> $this->ci->input->ip_address(),
+				'approved'=>(int)$this->ci->config->item('auto_acct_approval', 'tank_auth')
 			);
 			
 			if($custom) $data['meta'] = $custom;
@@ -676,23 +680,20 @@ class Tank_auth
 	 */
 	public function permit($permission){
 		$user_id = $this->ci->session->userdata('user_id');
-		$roles = $this->get_roles($user_id);
-		$override = $this->ci->users->get_permission_overrides($user_id);
+		//$roles = $this->ci->session->userdata('roles');
+		$user_permissions = $this->ci->users->get_permissions($user_id);
+		$overrides = $this->ci->users->get_permission_overrides($user_id);
 		$allow = FALSE;
 		
 		// Check role permissions
-		foreach($roles as $val){
-			$role_id = $val['role_id'];
-			foreach($this->ci->users->get_role_permissions($role_id) as $val){
-				if($val['permission'] == $permission){
-					$allow = TRUE;
-					break 2;
-				}
+		foreach($user_permissions as $val){
+			if($val == $permission){
+				$allow = TRUE;
+				break;
 			}
 		}
 		
 		// Check if there are overrides and overturn the result as needed
-		$overrides = $this->ci->users->get_permission_overrides($user_id);
 		if($overrides){
 			foreach($overrides as $val){
 				if($val['permission'] == $permission){
@@ -711,8 +712,8 @@ class Tank_auth
 	 * @param int $user_id
 	 * @return array
 	 */
-	public function get_roles(){
-		$user_id = $this->ci->session->userdata('user_id');
+	public function get_roles($user_id = NULL){
+		$user_id = is_null($user_id) ? $this->ci->session->userdata('user_id') : $user_id;
 		return $this->ci->users->get_roles($user_id);
 	}
 	
@@ -724,6 +725,9 @@ class Tank_auth
 	}
 	public function remove_override($user_id, $permission){
 		return $this->ci->users->remove_override($user_id, $permission);
+	}
+	public function flip_override($user_id, $permission){
+		return $this->ci->users->flip_override($user_id, $permission);
 	}
 	
 	/**
@@ -740,11 +744,43 @@ class Tank_auth
 	}
 	
 	/**
-	 *
+	 * Permission mangement methods
+	 */
+	public function add_permission($permission, $role){
+		return $this->ci->users->add_permission($permission, $role);
+	}
+	public function remove_permission($permission, $role){
+		return $this->ci->users->remove_permission($permission, $role);
+	}
+	public function new_permission($permission, $description){
+		return $this->ci->users->new_permission($permission, $description);
+	}
+	public function clear_permission($permission){
+		return $this->ci->users->clear_permission($permission);
+	}
+	public function save_permission($permission_ident, $permission, $description){
+		$data = array(
+			'permission_ident'=>$permission_ident,
+			'permission'=>$permission,
+			'description'=>$description
+		);
+		
+		return $this->ci->users->save_permission($data);
+	}
+	
+	/**
+	 * Get user profile contents
 	 */
 	public function get_user_profile($user_id = NULL){
 		$user_id = is_null($user_id) ? $this->session->userdata('user_id') : $user_id;
 		return $this->ci->users->get_user_profile($user_id);
+	}
+	
+	/**
+	 * Check if user is approved
+	 */
+	public function is_approved($user_id){
+		return $this->ci->users->is_approved($user_id);
 	}
 
 }
