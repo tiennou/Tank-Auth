@@ -457,6 +457,16 @@ class Users extends CI_Model
 	}
 	
 	/**
+	 * Gets all the permissions of a user based on his role/s
+	 */
+	public function get_permissions($user_id){
+		// Does not include overrites yet
+		$q = $this->db->query("SELECT GROUP_CONCAT(DISTINCT permission) permission FROM {$this->dbprefix}user_roles JOIN {$this->dbprefix}roles USING(role_id) JOIN {$this->dbprefix}role_permissions USING(role_id) JOIN {$this->dbprefix}permissions USING(permission_id) WHERE user_id=?", array($user_id));
+		$row = $q->row_array();
+		return explode(',', $row['permission']);
+	}
+	
+	/**
 	 * Returns a multidimensional array with info on the user's roles in associative format
 	 * Keys: 'role_id', 'role', 'full', 'default'
 	 * 
@@ -512,6 +522,23 @@ class Users extends CI_Model
 		else {
 			return FALSE;
 		}
+	}
+	
+	/**
+	 * Flip the override `allow` column from 1 to 0 and vice versa
+	 */
+	public function flip_override($user_id, $permission){
+		$permission_id = $this->get_permission_id($permission);
+		
+		// Get the current value
+		$q = $this->db->query("SELECT allow FROM {$this->dbprefix}overrides WHERE user_id=? AND permission_id=? LIMIT 1", array($user_id, $permission_id));
+		$row = $q->row_array();
+		
+		// Flip it
+		$allow = $row['allow'] ? 0 : 1;
+		
+		// Save it
+		return $this->db->query("UPDATE {$this->dbprefix}overrides SET allow=? WHERE user_id=? AND permission_id=?", array($allow, $user_id, $permission_id));
 	}
 	
 	/**
@@ -620,13 +647,106 @@ class Users extends CI_Model
 	}
 	
 	/**
-	 *
+	 * Get user profile data
 	 */
 	public function get_user_profile($user_id){
 		$query = $this->db->query("SELECT * FROM {$this->profile_table_name} WHERE id=? LIMIT 1", array($user_id));
 		return $query->row_array();
 	}
 	
+	/**
+	 * Check if user account is approved
+	 */
+	public function is_approved($user_id){
+		$query = $this->db->query("SELECT approved FROM {$this->table_name} WHERE id=? LIMIT 1", array($user_id));
+		$row = $query->row_array();
+		
+		return (bool)$row['approved'];
+	}
+	
+	/**
+	 * Add permission to role
+	 */
+	public function add_permission($permission, $role){
+		$role_id = $this->get_role_id($role);
+		
+		if(is_array($permission)){
+			$this->db->trans_start();
+			foreach($permission as $val){
+				$permission_id = $this->get_permission_id($val);
+				$this->db->query("INSERT IGNORE {$this->dbprefix}role_permissions VALUES (?, ?)", array($role_id, $permission_id));
+			}
+			$this->db->trans_complete();
+			
+			return $this->db->trans_status();
+		}
+		elseif(is_string($permission)){
+			$permission_id = $this->get_permission_id($permission);
+			return $this->db->query("INSERT IGNORE {$this->dbprefix}role_permissions VALUES (?, ?)", array($role_id, $permission_id));
+		}
+	}
+	
+	/**
+	 * Remove permission from role
+	 */
+	public function remove_permission($permission, $role){
+		$role_id = $this->get_role_id($role);
+		
+		if(is_array($permission)){
+			$this->db->trans_start();
+			foreach($permission as $val){
+				$permission_id = $this->get_permission_id($val);
+				$this->db->query("DELETE FROM {$this->dbprefix}role_permissions WHERE role_id=? AND permission_id=?", array($role_id, $permission_id));
+			}
+			$this->db->trans_complete();
+			
+			return $this->db->trans_status();
+		}
+		elseif(is_string($permission)){
+			$permission_id = $this->get_permission_id($permission);
+			return $this->db->query("DELETE FROM {$this->dbprefix}role_permissions WHERE role_id=? AND permission_id=?", array($role_id, $permission_id));
+		}
+	}
+	
+	/**
+	 * Add a new permission to the `permissions` table
+	 */
+	public function new_permission($permission, $description){
+		$q = $this->db->query("SELECT permission FROM {$this->dbprefix}permissions WHERE permission=? LIMIT 1", array($permission));
+		
+		if(!$q->num_rows()){
+			return $this->db->query("INSERT INTO {$this->dbprefix}permissions VALUES (NULL, ?, ?)", array($permission, $description));
+		}
+		
+		return TRUE;
+	}
+	
+	/**
+	 * Delete permission from the `permissions` table
+	 */
+	public function clear_permission($permission){
+		if(is_array($permission)){
+			$this->db->trans_start();
+			foreach($permission as $val){
+				$this->db->query("DELETE FROM {$this->dbprefix}permissions WHERE permission=?", array($val));
+			}
+			$this->db->trans_complete();
+			
+			return $this->db->trans_status();
+		}
+		elseif(is_string($permission)){
+			return $this->db->query("DELETE FROM {$this->dbprefix}permissions WHERE permission=?", array($permission));
+		}
+	}
+	
+	/**
+	 * Save permission
+	 */
+	public function save_permission($data){
+		extract($data);
+		$permission_id = is_string($permission_ident) ? $this->get_permission_id($permission_ident) : $permission_ident;
+		return $this->db->query("UPDATE {$this->dbprefix}permissions SET permission=?, description=? WHERE permission_id=?", array($permission, $description, $permission_id));
+	}
 }
 
 /* End of file users.php */

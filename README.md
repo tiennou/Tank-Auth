@@ -3,30 +3,38 @@ Tank Auth w/ Role-Based Access Control (RBAC)
 
 > **This is Under Development and is not usable in its current form**. If you're fine using my previous fork of Tank Auth which features a basic role system then please use that for now.
 
-This new version of Tank Auth implements the **Role-Based Access Control** method. This makes it more flexible than any of my previous commits. For more info on RBAC, refer to [this RBAC post](http://www.tonymarston.net/php-mysql/role-based-access-control.html 'Role-Based Access Control').
+This new fork implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minderals it's practically it's own food group! Okay, maybe not. For more info on RBAC, refer to [this post](http://www.tonymarston.net/php-mysql/role-based-access-control.html 'Role-Based Access Control').
 
 To do:
 ------
 1. **Completed** - *Replace default captcha with [Cool Captcha](http://code.google.com/p/cool-php-captcha/)*
 1. **Completed** - *Add custom fields to the registration page*
 1. **Ready for testing** - *Role-Based Access Controle (RBAC) w/ user-level overrides*
+1. Activation, Autoloading, and Acct Approval options
 1. Buy myself an ice cream
 
 Methods
 -------
 ### Role-Based Access Control
-- `permit()`: Used for checking if the user can do the permision you specify. All permissions are listed in the `permissions.permission` table.
-- `get_roles()`: Returns a multidimensional array of a user's role/s.
-- `add_override()` and `remove_override()`: Override permissions on a per-user basis. This allows you to give/take away permissions to users outside of their active role/s.
+
+All arguments for the following methods can be found by searching through the *Tank_auth* library and *Users* model. Lift those sticky fingers and *Ctrl-F* like your project depended on it!
+
+- `permit()`: Used for checking if the user can do the permission you specify. All permissions are listed in the `permissions.permission` table. This is the most important method of all.
+- `add_permission()` and `remove_permission()`: Add/Remove permissions to roles.
+- `new_permission()`, `clear_permission()`, and `save_permission()`: Insert data in the `permissions` table.
+- `add_override()`, `remove_override()`, and `flip_override()`: Override permissions on a per-user basis. This allows you to give/take away permissions to users outside of their active role/s.
 - `add_role()`, `remove_role()`, `change_role()`: Basic role management. If you'll be using any of these, be sure to create a role which allows it (preferably the *Admin* role).
 
 More methods may have been added but those above are the ones you'll most likely be using.
 
 ### Custom Registration Fields
-Always assign custom fields to the `$config['registration_fields']` array.
+Add extra fields to your registration page. Always assign custom fields to the `$config['registration_fields']` array in the *tank_auth.php* config file or else the sky will fall on your head.
 
-###### 1. Text input format: *`array(Name, Label, Rules, 'text', Attributes)`*
-Usage:
+> **How it works:** Field data is serialized in the `users.meta` table until the account is activated. After that, all data is transferred to the `profiles` table where it stays for the duration of the account.
+
+**1. Text input format:** *`array(Name, Label, Rules, 'text', Attributes)`*
+
+How to use:
 
 	// Sample 1
 	$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
@@ -35,8 +43,9 @@ Usage:
 	$attr = array('class'=>'bigfont');
 	$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text', $attr);
 
-###### 2. Radio format: *`array(Name, Label, Rules, 'radio', Selection, Opening tag, Closing tag)`*
-Usage:
+**2. Radio format:** *`array(Name, Label, Rules, 'radio', Selection, Opening tag, Closing tag)`*
+
+How to use:
 
 	$selection = array(
 		'm'=>'Male',
@@ -52,8 +61,9 @@ Usage:
 Radio fields do not have any assigned default value (unlike checkbox fields).
 
 
-###### 3. Select format: *`array(Name, Label, Rules, 'dropdown', Selection)`*
-Usage:
+**3. Dropdown format:** *`array(Name, Label, Rules, 'dropdown', Selection)`*
+
+How to use:
 
 	// Make the initial value '0' so the field will fail if selected
 	$selection = array(
@@ -64,10 +74,11 @@ Usage:
 	);
 	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', $selection);
 
-The callback `_not_zero` simply returns `FALSE` only if the value is 0.
+The callback `_not_zero` simply returns `FALSE` if the value is `0`.
 
-###### 4. Checkbox format: *`array(Name, Label, Rules, 'checkbox', Checkbox Label, Default Checked)`*
-Usage:
+**4. Checkbox format:** *`array(Name, Label, Rules, 'checkbox', Checkbox Label, Default Checked)`*
+
+How to use:
 
 	// Sample 1
 	$config['registration_fields'][] = array('money', 'Money', 'trim|numeric', 'checkbox', 'I want money');

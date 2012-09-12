@@ -68,7 +68,7 @@ $captcha = array(
 		<td style="color: red;"><?php echo form_error($confirm_password['name']); ?></td>
 	</tr>
 	
-  <?php if($registration_fields) : foreach($registration_fields as $val) : ?>
+  <?php if(isset($registration_fields)) : foreach($registration_fields as $val) : ?>
 		<?php
 			list($name, $label,, $type) = $val;
 			$field = array('name'	=> $name, 'id'	=> $name, 'value' => set_value($name));
