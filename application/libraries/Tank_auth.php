@@ -67,24 +67,22 @@ class Tank_auth
 					if ($user->banned == 1) {									// fail - banned
 						$this->error = array('banned' => $user->ban_reason);
 
-					} else {
-						// Get data from the profile
-						$user_profile = $this->ci->users->get_user_profile($user->id);
-						$user_roles = $this->ci->users->get_roles($user->id);
-						
+					} else {						
 						// Save to session
 						$this->ci->session->set_userdata(array(
 								'user_id'	=> $user->id,
 								'username'	=> $user->username,
 								'status'	=> ($user->activated == 1) ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED,
-								'user_profile'=>$user_profile,
-								'roles'=>$user_roles
+								'roles'=>$this->ci->users->get_roles($user->id)
 						));
-
+						
 						if ($user->activated == 0) {							// fail - not activated
 							$this->error = array('not_activated' => '');
 
 						} else {												// success
+							$user_profile = $this->ci->users->get_user_profile($user->id);
+							$this->ci->session->set_userdata('user_profile', $user_profile);
+							
 							if ($remember) {
 								$this->create_autologin($user->id);
 							}
@@ -777,10 +775,17 @@ class Tank_auth
 	}
 	
 	/**
-	 * Check if user is approved
+	 * Account approval methods
 	 */
-	public function is_approved($user_id){
+	public function is_approved($user_id = NULL){
+		$user_id = is_null($user_id) ? $this->ci->session->userdata('user_id') : $user_id;
 		return $this->ci->users->is_approved($user_id);
+	}
+	public function approve_user($user_id){
+		return $this->ci->users->approve_user($user_id);
+	}
+	public function unapprove_user($user_id){
+		return $this->ci->users->unapprove_user($user_id);
 	}
 
 }

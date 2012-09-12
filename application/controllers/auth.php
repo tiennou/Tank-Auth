@@ -68,7 +68,15 @@ class Auth extends CI_Controller
 						$this->form_validation->set_value('remember'),
 						$data['login_by_username'],
 						$data['login_by_email'])) {								// success
-					redirect($this->config->item('login_success', 'tank_auth'));
+					
+					// Approved or not
+					if($this->tank_auth->is_approved()){
+						redirect($this->config->item('login_success', 'tank_auth'));
+					}
+					else {
+						$this->tank_auth->logout();
+						redirect($this->config->item('acct_unapproved', 'tank_auth'));
+					}
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -651,6 +659,13 @@ class Auth extends CI_Controller
 		}
 		
 		return TRUE;
+	}
+	
+	/**
+	 *
+	 */
+	public function unapproved(){
+		$this->load->view('auth/unapproved');
 	}
 
 }

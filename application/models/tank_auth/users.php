@@ -747,6 +747,22 @@ class Users extends CI_Model
 		$permission_id = is_string($permission_ident) ? $this->get_permission_id($permission_ident) : $permission_ident;
 		return $this->db->query("UPDATE {$this->dbprefix}permissions SET permission=?, description=? WHERE permission_id=?", array($permission, $description, $permission_id));
 	}
+	
+	/**
+	 * Approve a user
+	 */
+	public function approve_user($user_id){
+		return $this->db->query("UPDATE {$this->table_name} SET approved=? WHERE id=?", array(1, $user_id));
+	}
+	
+	/**
+	 * Unapprove a user
+	 */
+	public function unapprove_user($user_id){
+		return $this->db->query("UPDATE {$this->table_name} SET approved=? WHERE id=?", array(0, $user_id));
+	}
+
+	
 }
 
 /* End of file users.php */

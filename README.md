@@ -20,10 +20,10 @@ Methods
 All arguments for the following methods can be found by searching through the *Tank_auth* library and *Users* model. Lift those sticky fingers and *Ctrl-F* like your project depended on it!
 
 - `permit()`: Used for checking if the user can do the permission you specify. All permissions are listed in the `permissions.permission` table. This is the most important method of all.
-- `add_permission()` and `remove_permission()`: Add/Remove permissions to roles.
+- `add_permission()` and `remove_permission()`: Add/Remove permissions of roles.
 - `new_permission()`, `clear_permission()`, and `save_permission()`: Insert data in the `permissions` table.
 - `add_override()`, `remove_override()`, and `flip_override()`: Override permissions on a per-user basis. This allows you to give/take away permissions to users outside of their active role/s.
-- `add_role()`, `remove_role()`, `change_role()`: Basic role management. If you'll be using any of these, be sure to create a role which allows it (preferably the *Admin* role).
+- `add_role()`, `remove_role()`, `change_role()`: Basic role management for *Users*. If you're looking to create new roles in the `roles` table, I suggest you do it in SQL.
 
 More methods may have been added but those above are the ones you'll most likely be using.
 

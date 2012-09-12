@@ -9,8 +9,6 @@
 */
 $config['website_name'] = 'Tank Auth Fork';
 $config['webmaster_email'] = 'enchance@gmail.com';
-$config['login_success'] = 'welcome';
-$config['register_redirect'] = '';
 
 // Blacklisted usernames
 $blacklist = array('admin', 'administrator', 'mod', 'moderator', 'root');
@@ -38,24 +36,34 @@ foreach($config['username_blacklist'] as $key=>$name){
 
 /*
 |--------------------------------------------------------------------------
-| Registration required fields
+| Custom registration fields
 |
 | This allows you to use fields from your 'user_profiles' table and require
-| them for registration. All custom fields will be serialized in the 'users' table
-| and once authenticated will be transferred to the 'user_profiles' table.
+| them for registration. All custom fields are serialized in the 'users' table
+| before being tranferred to the `user_profiles` table after activation.
 |
-| $attr (optional) is an array of attributes for input="text" fields (e.g. array('class'=>'myclass'))
-| Format: array('field_name', 'label', 'set_rules', 'text', $attr = array())
 |--------------------------------------------------------------------------
 */
-// Uncomment for custom registration fields. Add as many as you like and change the names, labels and other details as needed.
 /*
+// Sample fields. Add as many as you like and customize as needed. View README.md for more info and how to use.
 $config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
 $config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text', array('class'=>'something'));
-$config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>'); // Radio
-$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines')); // Make the initial value '0' so the field will fail if selected
-$config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkbox', 'I want money', TRUE); // Checkbox: TRUE if checked by default.
+$config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>');
+$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
+$config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkbox', 'I want money', TRUE);
 */
+
+/*
+|--------------------------------------------------------------------------
+| Landing pages
+|
+| List of landing pages for redirection. I had this separated so you can eventually redirect it
+| to your own controller with flashdata to restrict its viewing.
+|--------------------------------------------------------------------------
+*/
+$config['login_success'] = 'welcome';
+$config['acct_unapproved'] = 'auth/unapproved';
+$config['register_redirect'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -88,12 +96,12 @@ $config['phpass_hash_strength'] = 8;
 */
 $config['allow_registration'] = TRUE;
 $config['captcha_registration'] = TRUE;
-$config['email_activation'] = FALSE;
+$config['email_activation'] = TRUE;
 $config['email_activation_expire'] = 60*60*24*2;
 $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
 
-// If you want to manually approve all activated and non-activated accounts, set this to FALSE;
+// To manually approve accounts, set this to FALSE
 $config['auto_acct_approval'] = TRUE;
 
 $config['username_min_length'] = 4;
