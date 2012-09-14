@@ -114,6 +114,8 @@ CREATE  TABLE IF NOT EXISTS `permissions` (
   `permission_id` SMALLINT UNSIGNED NOT NULL AUTO_INCREMENT ,
   `permission` VARCHAR(100) NOT NULL ,
   `description` VARCHAR(160) NULL ,
+  `parent` VARCHAR(100) NULL ,
+  `sort` TINYINT UNSIGNED NULL ,
   PRIMARY KEY (`permission_id`) )
 ENGINE = InnoDB;
 
@@ -184,12 +186,12 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- Data for table `permissions`
 -- -----------------------------------------------------
 START TRANSACTION;
-INSERT INTO `permissions` (`permission_id`, `permission`, `description`) VALUES (1, 'buy stuff', 'Buying me some goodies');
-INSERT INTO `permissions` (`permission_id`, `permission`, `description`) VALUES (2, 'watch movie', 'Movietime yo');
-INSERT INTO `permissions` (`permission_id`, `permission`, `description`) VALUES (3, 'eat food', 'Eat lots of food');
-INSERT INTO `permissions` (`permission_id`, `permission`, `description`) VALUES (4, 'clean cat', 'Clean that dirty cat!');
-INSERT INTO `permissions` (`permission_id`, `permission`, `description`) VALUES (5, 'win lottery', 'Yipeeee!');
-INSERT INTO `permissions` (`permission_id`, `permission`, `description`) VALUES (6, 'kiss girl', 'Kissy, kissy');
+INSERT INTO `permissions` (`permission_id`, `permission`, `description`, `parent`, `sort`) VALUES (1, 'buy stuff', 'Buying me some goodies', 'I want chicken for dinner', NULL);
+INSERT INTO `permissions` (`permission_id`, `permission`, `description`, `parent`, `sort`) VALUES (2, 'watch movie', 'Movietime yo', 'I want chicken for dinner', NULL);
+INSERT INTO `permissions` (`permission_id`, `permission`, `description`, `parent`, `sort`) VALUES (3, 'eat food', 'Eat lots of food', 'I want chicken for dinner', NULL);
+INSERT INTO `permissions` (`permission_id`, `permission`, `description`, `parent`, `sort`) VALUES (4, 'clean cat', 'Clean that dirty cat!', 'Will Codeigniter for food', 3);
+INSERT INTO `permissions` (`permission_id`, `permission`, `description`, `parent`, `sort`) VALUES (5, 'win lottery', 'Yipeeee!', 'Will Codeigniter for food', 2);
+INSERT INTO `permissions` (`permission_id`, `permission`, `description`, `parent`, `sort`) VALUES (6, 'kiss girl', 'Kissy, kissy', 'Will Codeigniter for food', 1);
 
 COMMIT;
 
