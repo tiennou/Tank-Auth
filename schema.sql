@@ -90,7 +90,6 @@ CREATE  TABLE IF NOT EXISTS `users` (
   `new_password_requested` DATETIME NULL ,
   `new_email` VARCHAR(100) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
   `new_email_key` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NULL ,
-  `override` TINYINT NULL DEFAULT 0 COMMENT 'Checks the override table if necessary' ,
   `approved` TINYINT(1) NULL COMMENT 'For acct approval.' ,
   `meta` VARCHAR(2000) NULL DEFAULT '' ,
   `last_ip` VARCHAR(40) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
