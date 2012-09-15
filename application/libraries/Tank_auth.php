@@ -185,7 +185,7 @@ class Tank_auth
 				'password'	=> $hashed_password,
 				'email'		=> $email,
 				'last_ip'	=> $this->ci->input->ip_address(),
-				'approved'=>(int)$this->ci->config->item('auto_acct_approval', 'tank_auth')
+				'approved'=>(int)$this->ci->config->item('acct_approval', 'tank_auth')
 			);
 			
 			if($custom) $data['meta'] = $custom;
@@ -673,12 +673,11 @@ class Tank_auth
 	/**
 	 * User has permission to do an action
 	 *
-	 * @param string $permission: The permission you want to check for from the `permissions` table
+	 * @param string $permission: The permission you want to check for from the `permissions.permission` table
 	 * @return bool
 	 */
 	public function permit($permission){
 		$user_id = $this->ci->session->userdata('user_id');
-		//$roles = $this->ci->session->userdata('roles');
 		$user_permissions = $this->ci->users->get_permissions($user_id);
 		$overrides = $this->ci->users->get_permission_overrides($user_id);
 		$allow = FALSE;
