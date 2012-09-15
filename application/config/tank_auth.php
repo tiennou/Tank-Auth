@@ -61,8 +61,8 @@ $config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkb
 | to your own controller with flashdata to restrict its viewing.
 |--------------------------------------------------------------------------
 */
+$config['flashdata_key'] = 'allow'; // The flashdata to check for. If TRUE then the landing page is displayed.
 $config['login_success'] = 'welcome';
-$config['acct_unapproved'] = 'auth/unapproved';
 $config['register_redirect'] = '';
 
 /*

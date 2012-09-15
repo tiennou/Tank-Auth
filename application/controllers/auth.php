@@ -11,15 +11,19 @@ class Auth extends CI_Controller
 		
 		if(version_compare(CI_VERSION,'2.1.0','<')) $this->load->library('security');
 		$this->lang->load('tank_auth');
+		$this->flashdata_key = $this->config->item('flashdata_key', 'tank_auth');
 	}
 
 	function index()
 	{
+		/*
 		if ($message = $this->session->flashdata('message')) {
 			$this->load->view('auth/general_message', array('message' => $message));
 		} else {
 			redirect('/auth/login/');
 		}
+		*/
+		redirect('/auth/login/');
 	}
 
 	/**
@@ -75,7 +79,8 @@ class Auth extends CI_Controller
 					}
 					else {
 						$this->tank_auth->logout();
-						redirect($this->config->item('acct_unapproved', 'tank_auth'));
+						$this->tank_auth->notice('acct-unapproved');
+						//redirect($this->config->item('acct_unapproved', 'tank_auth'));
 					}
 
 				} else {
@@ -204,17 +209,17 @@ class Auth extends CI_Controller
 
 						unset($data['password']); // Clear password (just for any case)
 
-						$this->_show_message($this->lang->line('auth_message_registration_completed_1'));
-
 					} else {
 						if ($this->config->item('email_account_details', 'tank_auth')) {	// send "welcome" email
 
 							$this->_send_email('welcome', $data['email'], $data);
 						}
 						unset($data['password']); // Clear password (just for any case)
-
-						$this->_show_message($this->lang->line('auth_message_registration_completed_2').' '.anchor('/auth/login/', 'Login'));
 					}
+					
+					$this->tank_auth->notice('successful-registration');
+					//redirect($this->config-item('successful_registration', 'tank_auth'));
+					
 				} else {
 					$errors = $this->tank_auth->get_error_message();
 					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
@@ -662,11 +667,19 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 *
+	 * Is this even in use?
 	 */
+	/*
 	public function unapproved(){
 		$this->load->view('auth/unapproved');
 	}
+	*/
+	
+	/*
+	public function aaa(){
+		$this->tank_auth->notice('acct-unapproved');
+	}
+	*/
 
 }
 

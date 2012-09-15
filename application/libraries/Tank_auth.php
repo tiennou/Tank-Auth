@@ -786,7 +786,16 @@ class Tank_auth
 	public function unapprove_user($user_id){
 		return $this->ci->users->unapprove_user($user_id);
 	}
-
+	
+	/**
+	 * Open a notice page
+	 */
+	public function notice($page = NULL){
+		if(is_null($page)) redirect('auth/login');
+		
+		$this->ci->session->set_flashdata($this->ci->config->item('flashdata_key', 'tank_auth'), TRUE);
+		redirect('notice/'.$page);
+	}
 }
 
 /* End of file Tank_auth.php */
