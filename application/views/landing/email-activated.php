@@ -7,6 +7,6 @@
 
 <body class="<?php echo $body_class; ?>">
 <h1><?php echo $page_title; ?></h1>
-You have successfully changed your email.
+You have successfully changed your email. <a href="<?php echo $login_link; ?>">Login now.</a>
 </body>
 </html>

@@ -7,6 +7,6 @@
 
 <body class="<?php echo $body_class; ?>">
 <h1><?php echo $page_title; ?></h1>
-Your account has been successfully activated.
+Your account has been successfully activated. <a href="<?php $login_link; ?>">Login now</a>
 </body>
 </html>

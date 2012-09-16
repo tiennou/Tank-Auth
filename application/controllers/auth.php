@@ -283,6 +283,8 @@ class Auth extends CI_Controller
 					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
 				}
 			}
+			
+			$data['logout_link'] = site_url().'auth/logout';
 			$this->load->view('auth/send_again_form', $data);
 		}
 	}

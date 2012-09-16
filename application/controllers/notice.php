@@ -22,6 +22,7 @@ class Notice extends CI_Controller {
 
 					
 				case 'acct-unapproved':
+					$data['logout_link'] = site_url().'auth/logout';
 					$data['page_title'] = 'Account not yet Approved';
 					break;
 				
@@ -36,6 +37,7 @@ class Notice extends CI_Controller {
 					$data['page_title'] = 'Activation Email Sent';
 					break;	
 				case 'activation-completed':
+					$data['login_link'] = site_url().'auth/login';
 					$data['page_title'] = 'Activation Completed';
 					break;	
 				case 'activation-failed':
@@ -62,6 +64,7 @@ class Notice extends CI_Controller {
 					$data['page_title'] = 'Confirmation Email Sent';
 					break;	
 				case 'email-activated':
+					$data['login_link'] = site_url().'auth/login';
 					$data['page_title'] = 'Your Email has been Activated';
 					break;	
 				case 'email-failed':
