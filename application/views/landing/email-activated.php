@@ -7,6 +7,6 @@
 
 <body class="<?php echo $body_class; ?>">
 <h1><?php echo $page_title; ?></h1>
-You've just registered! Now go out and tell your friends how awesome you are.
+You have successfully changed your email.
 </body>
 </html>

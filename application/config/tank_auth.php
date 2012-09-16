@@ -61,9 +61,8 @@ $config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkb
 | to your own controller with flashdata to restrict its viewing.
 |--------------------------------------------------------------------------
 */
-$config['flashdata_key'] = 'allow'; // The flashdata to check for. If TRUE then the landing page is displayed.
+$config['notice_key'] = 'allow_notice'; // The flashdata to check for. If TRUE then the landing page is displayed.
 $config['login_success'] = 'welcome';
-$config['register_redirect'] = '';
 
 /*
 |--------------------------------------------------------------------------
@@ -96,7 +95,7 @@ $config['phpass_hash_strength'] = 8;
 */
 $config['allow_registration'] = TRUE;
 $config['captcha_registration'] = TRUE;
-$config['email_activation'] = TRUE;
+$config['email_activation'] = FALSE;
 $config['email_activation_expire'] = 60*60*24*2;
 $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;

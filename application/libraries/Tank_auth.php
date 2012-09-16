@@ -790,10 +790,11 @@ class Tank_auth
 	/**
 	 * Open a notice page
 	 */
-	public function notice($page = NULL){
+	public function notice($page = NULL, $data = FALSE){
 		if(is_null($page)) redirect('auth/login');
 		
-		$this->ci->session->set_flashdata($this->ci->config->item('flashdata_key', 'tank_auth'), TRUE);
+		$this->ci->session->set_flashdata($this->ci->config->item('notice_key', 'tank_auth'), TRUE);
+		$this->ci->session->set_flashdata('notice_data', $data);
 		redirect('notice/'.$page);
 	}
 }
