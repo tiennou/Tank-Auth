@@ -535,7 +535,7 @@ class Users extends CI_Model
 		$row = $q->row_array();
 		
 		// Flip it
-		$allow = $row['allow'] ? 0 : 1;
+		$allow = (int)$row['allow'] ? 0 : 1;
 		
 		// Save it
 		return $this->db->query("UPDATE {$this->dbprefix}overrides SET allow=? WHERE user_id=? AND permission_id=?", array($allow, $user_id, $permission_id));
@@ -711,11 +711,11 @@ class Users extends CI_Model
 	/**
 	 * Add a new permission to the `permissions` table
 	 */
-	public function new_permission($permission, $description){
+	public function new_permission($permission, $description, $parent = '', $sort = NULL){
 		$q = $this->db->query("SELECT permission FROM {$this->dbprefix}permissions WHERE permission=? LIMIT 1", array($permission));
 		
 		if(!$q->num_rows()){
-			return $this->db->query("INSERT INTO {$this->dbprefix}permissions VALUES (NULL, ?, ?)", array($permission, $description));
+			return $this->db->query("INSERT INTO {$this->dbprefix}permissions VALUES (NULL, ?, ?, ?, ?)", array($permission, $description, $parent, $sort));
 		}
 		
 		return TRUE;
@@ -726,16 +726,39 @@ class Users extends CI_Model
 	 */
 	public function clear_permission($permission){
 		if(is_array($permission)){
-			$this->db->trans_start();
+			// Create the question marks
+			$qmarks = '';
 			foreach($permission as $val){
-				$this->db->query("DELETE FROM {$this->dbprefix}permissions WHERE permission=?", array($val));
+				$qmarks .= '?';
+				if($val != end($permission)) $qmarks .= ', ';
 			}
+			
+			// Get the ids
+			$query = $this->db->query("SELECT permission_id FROM permissions WHERE permission IN({$qmarks})", $permission);
+			$row = $query->result_array();
+			
+			// Convert to single array (same as tank_auth->multi_to_single())
+			$keys = array_keys($row[0]);
+			foreach($row as $val){
+				$ids[] = $val[$keys[0]];
+			}
+			
+			$this->db->trans_start();
+			$this->db->query("DELETE FROM {$this->dbprefix}permissions WHERE permission IN({$qmarks})", $permission);
+			$this->db->query("DELETE FROM {$this->dbprefix}role_permissions WHERE permission_id IN({$qmarks})", $ids);
 			$this->db->trans_complete();
 			
 			return $this->db->trans_status();
 		}
 		elseif(is_string($permission)){
-			return $this->db->query("DELETE FROM {$this->dbprefix}permissions WHERE permission=?", array($permission));
+			$permission_id = $this->get_permission_id($permission);
+			$this->db->trans_start();
+			$this->db->query("DELETE FROM {$this->dbprefix}permissions WHERE permission=?", array($permission));
+			$this->db->query("DELETE FROM {$this->dbprefix}role_permissions WHERE permission_id=?", array($permission_id));
+			$this->db->trans_complete();
+			//return 
+			
+			return $this->db->trans_status();
 		}
 	}
 	
@@ -745,7 +768,21 @@ class Users extends CI_Model
 	public function save_permission($data){
 		extract($data);
 		$permission_id = is_string($permission_ident) ? $this->get_permission_id($permission_ident) : $permission_ident;
-		return $this->db->query("UPDATE {$this->dbprefix}permissions SET permission=?, description=? WHERE permission_id=?", array($permission, $description, $permission_id));
+		unset($data['permission_ident']);
+		
+		$str = '';
+		foreach($data as $key=>$val){
+			if($val !== FALSE){
+				$str .= "{$key}=?";
+				$arr[] = $val;
+				
+				if($val != end($data)) $str .= ', ';
+			}
+		}
+		$arr[] = $permission_id;
+		
+		return $this->db->query("UPDATE {$this->dbprefix}permissions SET {$str} WHERE permission_id=?", $arr);
+		//return "UPDATE {$this->dbprefix}permissions SET {$str} WHERE permission_id=?"; // Debug output query string
 	}
 	
 	/**

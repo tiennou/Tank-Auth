@@ -1,7 +1,7 @@
 Tank Auth w/ Role-Based Access Control (RBAC)
 ==============================================
 
-> **Undergoing beta testing**. This is currently being swept for bugs. I'll be running more tests and adding more features as I see fit along the way. Any bug testers will be much appreciated. Thanks!
+> **We are undergoing beta testing**. This is currently being swept for bugs. I'll be running more tests and adding more features as I see fit along the way. Will update you when it's ready (really soon!). Thanks!
 
 This fork implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
@@ -12,12 +12,16 @@ New Features
 1. Add custom fields to your registration page
 1. Approve user registrations manually. They can register and activate but not enter until they are approved. By default, all registrants are auto-approved: `$config['acct_approval'] = TRUE`.
 1. Replaced the default captcha with [Cool Captcha](http://code.google.com/p/cool-php-captcha/)
+1. Custom views for basic notifications (no more editing the lang file)
 
-Checklist (what's left of it):
+Checklist (or what's left of it):
 
-1. **Beta testing in progress** - *Role-Based Access Control (RBAC) w/ user-level overrides*
-1. Custom controller to manage all landing pages
+1. **Beta testing in progress** - Testing everything as a whole (almost there!)
 1. Buy myself an ice cream
+
+Requested features:
+
+1. Nothing yet.
 
 Methods & Configurations
 ------------------------
@@ -130,7 +134,8 @@ _Editor's note:_ This is used on a case-to-case basis only. It allows for extend
 
 Changelog
 ---------
-1. Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!). - *Sep 15, 2012*
+1. Added views for each basic notification instead of using the lang file - *Sep 17, 2012*
+1. Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!) - *Sep 15, 2012*
 1. Initial RBAC functionality achieved: Add/Remove/Change roles - *Sep 12, 2012*
 1. Check permissions with the `permit()` method which allows you to override permissions on a user-level scope - *Sep 11, 2012*
 1. Add custom fields to the registration page - *Sep 10, 2012*

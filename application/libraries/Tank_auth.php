@@ -650,7 +650,7 @@ class Tank_auth
 	}
 	
 	/**
-	 * Gets the datatype of a table adn converts it to the format $arr['column_name'] = 'datatype'
+	 * Gets the datatype of a table and converts it to the format $arr['column_name'] = 'datatype'
 	 */
 	public function get_profile_datatypes(){
 		$result_array = $this->ci->users->get_profile_datatypes();
@@ -660,11 +660,29 @@ class Tank_auth
 	/**
 	 * Converts a multidimensional array (2 levels only) into a single associative
 	 * array where $arr[0] is the key and $arr[1] is the value.
+	 *
+	 * @param array $result_array: The result of $query->result_array()
 	 */
-	public function multi_to_assoc($result_array){
+	public function multi_to_assoc($result_array, $value_only = FALSE){
 		foreach($result_array as $val){
 			$val = array_values($val);
 			$arr[$val[0]] = $val[1];
+		}
+		
+		return $arr;
+	}
+	
+	/**
+	 * Gets $query->result_array() except this deals with only the first element of each array.
+	 * This gets the value of that first element and saves them in an array.
+	 * This works on indexed and assoc arrays.
+	 *
+	 * @param array $result_array: The result of $query->result_array()
+	 */
+	public function multi_to_single($result_array){
+		$keys = array_keys($result_array[0]);
+		foreach($result_array as $val){
+			$arr[] = $val[$keys[0]];
 		}
 		
 		return $arr;
@@ -755,11 +773,13 @@ class Tank_auth
 	public function clear_permission($permission){
 		return $this->ci->users->clear_permission($permission);
 	}
-	public function save_permission($permission_ident, $permission, $description){
+	public function save_permission($permission_ident, $permission = FALSE, $description = FALSE, $parent = FALSE, $sort = FALSE){
 		$data = array(
 			'permission_ident'=>$permission_ident,
 			'permission'=>$permission,
-			'description'=>$description
+			'description'=>$description,
+			'parent'=>$parent,
+			'sort'=>$sort
 		);
 		
 		return $this->ci->users->save_permission($data);
