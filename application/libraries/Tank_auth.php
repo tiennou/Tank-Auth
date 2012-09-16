@@ -121,6 +121,7 @@ class Tank_auth
 		$this->ci->session->set_userdata(array('user_id' => '', 'username' => '', 'status' => ''));
 
 		$this->ci->session->sess_destroy();
+		//$this->ci->session->set_flashdata('logout', TRUE);
 	}
 
 	/**
@@ -791,10 +792,11 @@ class Tank_auth
 	 * Open a notice page
 	 */
 	public function notice($page = NULL, $data = FALSE){
-		if(is_null($page)) redirect('auth/login');
+		//$logout = $this->ci->session->flashdata('logout');
+		//if(is_null($page)) redirect('auth/login');
 		
-		$this->ci->session->set_flashdata($this->ci->config->item('notice_key', 'tank_auth'), TRUE);
-		$this->ci->session->set_flashdata('notice_data', $data);
+		$this->ci->session->set_flashdata('tankauth_allow_notice', TRUE);
+		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
 		redirect('notice/'.$page);
 	}
 }

@@ -61,8 +61,9 @@ $config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkb
 | to your own controller with flashdata to restrict its viewing.
 |--------------------------------------------------------------------------
 */
-$config['notice_key'] = 'allow_notice'; // The flashdata to check for. If TRUE then the landing page is displayed.
-$config['login_success'] = 'welcome';
+//$config['notice_key'] = 'allow_notice'; // The flashdata to check for. If TRUE then the landing page is displayed.
+$config['login-success'] = 'welcome';
+$config['logout-success'] = FALSE; // Set FALSE for landing page, '' for home, or 'xyz' for custom controller
 
 /*
 |--------------------------------------------------------------------------

@@ -34,7 +34,7 @@ class Auth extends CI_Controller
 	function login()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect($this->config->item('login_success', 'tank_auth'));
+			redirect($this->config->item('login-success', 'tank_auth'));
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('/auth/send_again/');
@@ -75,7 +75,7 @@ class Auth extends CI_Controller
 					
 					// Approved or not
 					if($this->tank_auth->is_approved()){
-						redirect($this->config->item('login_success', 'tank_auth'));
+						redirect($this->config->item('login-success', 'tank_auth'));
 					}
 					else {
 						$this->tank_auth->logout();
@@ -116,7 +116,14 @@ class Auth extends CI_Controller
 	function logout()
 	{
 		$this->tank_auth->logout();
-		$this->tank_auth->notice('logged-out');
+		$redirect = $this->config->item('logout-success', 'tank_auth');
+		
+		if($redirect === FALSE){
+			$this->tank_auth->notice('logout-success');
+		}
+		else {
+			redirect($redirect);
+		}
 	}
 
 	/**
@@ -397,7 +404,8 @@ class Auth extends CI_Controller
 
 		} else {
 			$this->form_validation->set_rules('old_password', 'Old Password', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+			
+			$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
 			$this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
 
 			$data['errors'] = array();

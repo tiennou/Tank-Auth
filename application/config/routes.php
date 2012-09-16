@@ -38,7 +38,7 @@
 |
 */
 
-$route['notice/(:any)'] = 'notice/open/$1';
+$route['notice/(:any)'] = 'notice/view/$1';
 $route['default_controller'] = "welcome";
 $route['404_override'] = '';
 

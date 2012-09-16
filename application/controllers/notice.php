@@ -2,24 +2,15 @@
 
 class Notice extends CI_Controller {
 	
-	private $ci;
-	private $flashdata_key;
-	
-	public function __construct(){
-		parent::__construct();
-		
-		$this->flashdata_key = $this->config->item('flashdata_key', 'tank_auth');
-	}
-	
 	public function index(){
 		redirect('auth/login');
 	}
 	
-	public function open($page){
+	public function view($page){
 
-		if($this->session->flashdata($this->flashdata_key)){
+		if($this->session->flashdata('tankauth_allow_notice', 'tank_auth')){
 			// Check for $data
-			if($this->session->flashdata('notice_data')) extract($this->session->flashdata('notice_data'));
+			if($this->session->flashdata('tankauth_notice_data')) extract($this->session->flashdata('tankauth_notice_data'));
 			
 			switch($page){
 				case 'registration-success':
@@ -35,11 +26,11 @@ class Notice extends CI_Controller {
 					break;
 				
 				
-				case 'logged-out':
+				case 'logout-success':
 					$data['page_title'] = 'Logged Out';
 					break;
 					
-					
+				// Activation
 				case 'activation-sent':
 					$data['email'] = $email;
 					$data['page_title'] = 'Activation Email Sent';
@@ -47,11 +38,11 @@ class Notice extends CI_Controller {
 				case 'activation-completed':
 					$data['page_title'] = 'Activation Completed';
 					break;	
-					
-					
 				case 'activation-failed':
 					$data['page_title'] = 'Activation Failed';
 					break;	
+					
+				// Password
 				case 'password-changed':
 					$data['page_title'] = 'Password Changed';
 					break;	
@@ -65,7 +56,7 @@ class Notice extends CI_Controller {
 					$data['page_title'] = 'Password Failed';
 					break;	
 					
-					
+				// Email
 				case 'email-sent':
 					$data['email'] = $new_email;
 					$data['page_title'] = 'Confirmation Email Sent';
@@ -77,7 +68,7 @@ class Notice extends CI_Controller {
 					$data['page_title'] = 'Email Sending Failed';
 					break;	
 					
-											
+				// User
 				case 'user-banned':
 					$data['page_title'] = 'You have been Banned.';
 					break;
