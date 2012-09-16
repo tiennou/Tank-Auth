@@ -394,8 +394,7 @@ class Tank_auth
 				$hashed_password = $hasher->HashPassword($new_pass);
 
 				// Replace old password with new one
-				$this->ci->users->change_password($user_id, $hashed_password);
-				return TRUE;
+				return $this->ci->users->change_password($user_id, $hashed_password);
 
 			} else {															// fail
 				$this->error = array('old_password' => 'auth_incorrect_password');

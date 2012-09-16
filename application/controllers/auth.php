@@ -11,7 +11,6 @@ class Auth extends CI_Controller
 		
 		if(version_compare(CI_VERSION,'2.1.0','<')) $this->load->library('security');
 		$this->lang->load('tank_auth');
-		$this->flashdata_key = $this->config->item('flashdata_key', 'tank_auth');
 	}
 
 	function index()
@@ -672,21 +671,6 @@ class Auth extends CI_Controller
 		return TRUE;
 	}
 	
-	/**
-	 * Is this even in use?
-	 */
-	/*
-	public function unapproved(){
-		$this->load->view('auth/unapproved');
-	}
-	*/
-	
-	/*
-	public function aaa(){
-		$this->tank_auth->notice('acct-unapproved');
-	}
-	*/
-
 }
 
 /* End of file auth.php */
