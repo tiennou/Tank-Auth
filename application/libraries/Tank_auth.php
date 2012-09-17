@@ -116,12 +116,11 @@ class Tank_auth
 	function logout()
 	{
 		$this->delete_autologin();
-
+		
 		// See http://codeigniter.com/forums/viewreply/662369/ as the reason for the next line
 		$this->ci->session->set_userdata(array('user_id' => '', 'username' => '', 'status' => ''));
 
 		$this->ci->session->sess_destroy();
-		//$this->ci->session->set_flashdata('logout', TRUE);
 	}
 
 	/**
@@ -817,6 +816,13 @@ class Tank_auth
 		$this->ci->session->set_flashdata('tankauth_allow_notice', TRUE);
 		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
 		redirect('notice/'.$page);
+	}
+	
+	/**
+	 *
+	 */
+	public function create_regdb_dropdown($dbname, $fields){
+		return $this->ci->users->create_regdb_dropdown($dbname, $fields);
 	}
 }
 

@@ -5,6 +5,8 @@ include_once 'krumo/class.krumo.php';
 //krumo($query);
 //krumo($debug);
 
+//krumo($dropdown_items);
+
 if ($use_username) {
 	$username = array(
 		'name'	=> 'username',
@@ -91,7 +93,11 @@ $captcha = array(
   	<?php elseif($type == 'dropdown') : ?>
       <tr>
         <td><?php echo form_label($label, $name); ?></td>
-        <td><?php echo form_dropdown($name, $val[4]); ?></td>
+				<?php if(isset($db_dropdowns) && in_array($name, $db_dropdowns)) : ?>
+					<td><?php echo form_dropdown($name, $dropdown_items[$name], $dropdown_items_default[$name]); ?></td>
+				<?php else : ?>
+					<td><?php echo form_dropdown($name, $dropdown_simple[$name], $dropdown_simple_default[$name]); ?></td>
+				<?php endif; ?>
         <td style="color: red;"><?php echo form_error($name); ?><?php echo isset($errors[$name]) ? $errors[$name] : ''; ?></td>
       </tr>
   	<?php elseif($type == 'checkbox') : ?>

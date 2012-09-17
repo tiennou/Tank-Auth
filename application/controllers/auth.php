@@ -154,8 +154,31 @@ class Auth extends CI_Controller
 			if($registration_fields){
 				foreach($registration_fields as $val){
 					$data['registration_fields'][] = $val;
-					list($name, $label, $rules) = $val;
+					list($name, $label, $rules, $type) = $val;
 					$this->form_validation->set_rules($name, $label, $rules);
+					
+					// Check if you need to query a db
+					if($type == 'dropdown'){
+						$selection = $val[4];
+						
+						if(is_string($val[4])){
+							$default = isset($val[5]) ? $val[5] : NULL;
+							preg_match('/\w+(?=\.)/', $selection, $dbname);
+							preg_match_all('/(?<=\.)\w+/', $selection, $fields);
+							$fields = $fields[0];
+							
+							// Create the dropdown field
+							//$data['dropdown_name'] = $name;
+							$data['dropdown_items'][$name] = $this->tank_auth->create_regdb_dropdown($dbname, $fields);
+							$data['dropdown_items_default'][$name] = $default;
+							$data['db_dropdowns'][] = $name;
+						}
+						else {
+							$default = isset($val[5]) ? $val[5] : NULL;
+							$data['dropdown_simple'][$name] = $selection;
+							$data['dropdown_simple_default'][$name] = $default;
+						}
+					}
 				}
 			}
 

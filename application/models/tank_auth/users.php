@@ -198,9 +198,10 @@ class Users extends CI_Model
 	{
 		$this->db->trans_start();
 		$this->db->query("DELETE FROM {$this->table_name} WHERE id=?", array($user_id));
+		$this->db->query("DELETE FROM {$this->profile_table_name} WHERE id=?", array($user_id));
 		$this->db->query("DELETE FROM {$this->dbprefix}user_roles WHERE user_id=?", array($user_id));
 		$this->db->query("DELETE FROM {$this->dbprefix}overrides WHERE user_id=?", array($user_id));
-		$this->db->query("DELETE FROM {$this->profile_table_name} WHERE id=?", array($user_id));
+		$this->db->query("DELETE FROM {$this->dbprefix}user_autologin WHERE user_id=?", array($user_id));
 		$this->db->trans_complete();
 		
 		return $this->db->trans_status() ? TRUE : FALSE;
@@ -799,6 +800,24 @@ class Users extends CI_Model
 		return $this->db->query("UPDATE {$this->table_name} SET approved=? WHERE id=?", array(0, $user_id));
 	}
 
+	
+	/**
+	 *
+	 */
+	public function create_regdb_dropdown($dbname, $fields){
+		// If you typed 3 fields, this makes sure you only get the first 2
+		$arr[] = $fields[0];
+		$arr[] = $fields[1];
+		$str = implode(', ', $arr);
+		$dbname = $dbname[0];
+		
+		$query = $this->db->query("SELECT {$str} FROM {$dbname}");
+		$row = $query->result_array();
+		$row = $this->tank_auth->multi_to_assoc($row);
+		$row = array_merge(array('0'=>'- choose -'), $row);
+		
+		return $row;
+	}
 	
 }
 

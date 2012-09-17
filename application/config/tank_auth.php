@@ -38,19 +38,27 @@ foreach($config['username_blacklist'] as $key=>$name){
 |--------------------------------------------------------------------------
 | Custom registration fields
 |
-| This allows you to use fields from your 'user_profiles' table and require
-| them for registration. All custom fields are serialized in the 'users' table
-| before being tranferred to the `user_profiles` table after activation.
+| Add custom fields to your registration page. See full instructions on how to
+| properly use this at https://github.com/enchance/Tank-Auth#custom-registration-fields
 |
 |--------------------------------------------------------------------------
 */
+$config['registration_fields'][] = array('aaa', 'Aaa', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
+$config['registration_fields'][] = array('bbb', 'Bbb', 'trim|required|callback__not_zero', 'dropdown', 'db[dbcountry.code, dbcountry.name]');
+$config['registration_fields'][] = array('ccc', 'Ccc', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
+$config['registration_fields'][] = array('ddd', 'Ddd', 'trim|required|callback__not_zero', 'dropdown', 'db[dbcountry.code, dbcountry.name]');
+$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
+
 /*
 // Sample fields. Add as many as you like and customize as needed. View README.md for more info and how to use.
 $config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
 $config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text', array('class'=>'something'));
+
 $config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>');
+$config['registration_fields'][] = array('checkit', 'Do you want money?', 'trim|numeric', 'checkbox', 'I want money');
+
 $config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
-$config['registration_fields'][] = array('test', 'Test', 'trim|numeric', 'checkbox', 'I want money', TRUE);
+$config['registration_fields'][] = array('category', 'Categories', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]');
 */
 
 /*

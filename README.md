@@ -27,7 +27,7 @@ How to use Tank Auth w/ RBAC
 ------------------------------
 ### New Methods
 
-Arguments for the methods below can be found by searching through the *Tank_auth.php* library. Lift those sticky fingers and *Ctrl-F* like your sex life depended on it!
+Arguments for the methods below can be found in the *Tank_auth.php* library. Lift those sticky fingers and *Cmd/Ctrl-F* like your sex life depended on it!
 
 - `permit()`: The most important method of all! This checks if the user is allowed to do a certain permission (e.g. view a page)
 - `add_permission()` and `remove_permission()`: Add/Remove permissions of roles. All permissions are listed in the `permissions.permission` table.
@@ -35,11 +35,23 @@ Arguments for the methods below can be found by searching through the *Tank_auth
 - `add_override()`, `remove_override()`, and `flip_override()`: Override permissions on a per-user basis. This allows you to give/take away permissions to users outside of their active role/s.
 - `add_role()`, `remove_role()`, `change_role()`: Basic role management for *Users*. If you're looking to create new roles in the `roles` table, I suggest you do it in SQL.
 
+###### Sample usage for `permit()`:
+
+	// Controller
+	// The permit() method has 1 argument which is any value from the `permissions.permission` field
+	
+	if($this->tank_auth->permit('edit page')){
+		// Success
+	}
+	else {
+		// Fail
+	}
+
 More methods may have been added but those above are the ones you'll most likely be using.
 
 Below is a complete description on how to use this fork. I tried my best to be as thorough as possible so if there's anything unclear then let me know and I'll clear it up for you.
 ### I. Empty all data
-1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are simply examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
+1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
 
 > You may choose to retain the data in the `roles` table. These include the most common roles found in every system and can be of use in your project.
 
@@ -107,10 +119,11 @@ How to use:
 Radio fields do not have any assigned default value (unlike checkbox fields).
 
 
-**3. Dropdown format:** *`array(Name, Label, Rules, 'dropdown', Selection)`*
+**3. Dropdown format:** *`array(Name, Label, Rules, 'dropdown', Selection, Default)`*
 
 How to use:
 
+	// Sample 1: Manual dropdown creation
 	// Make the initial value '0' so the field will fail if selected
 	$selection = array(
 		'0'=>'- choose -',
@@ -119,7 +132,18 @@ How to use:
 		'JP'=>'Japan'
 	);
 	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', $selection);
+	
+	// Sample 2: Manual w/ default value
+	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', $selection, 'default_value');
 
+	// Sample 3: Get data for select from db
+	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]');
+	
+	// Sample 4: DB w/ default value
+	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]', 'default_value');
+
+When getting data from the db with `'db[table.field1, table.field2]'`, `field1` becomes the key, and `field2` the value.
+	
 The callback `_not_zero` simply returns `FALSE` if the value is `0`.
 
 **4. Checkbox format:** *`array(Name, Label, Rules, 'checkbox', Checkbox Label, Default Checked)`*
