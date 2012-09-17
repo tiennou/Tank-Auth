@@ -43,12 +43,6 @@ foreach($config['username_blacklist'] as $key=>$name){
 |
 |--------------------------------------------------------------------------
 */
-$config['registration_fields'][] = array('aaa', 'Aaa', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
-$config['registration_fields'][] = array('bbb', 'Bbb', 'trim|required|callback__not_zero', 'dropdown', 'db[dbcountry.code, dbcountry.name]');
-$config['registration_fields'][] = array('ccc', 'Ccc', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
-$config['registration_fields'][] = array('ddd', 'Ddd', 'trim|required|callback__not_zero', 'dropdown', 'db[dbcountry.code, dbcountry.name]');
-$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
-
 /*
 // Sample fields. Add as many as you like and customize as needed. View README.md for more info and how to use.
 $config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
@@ -104,7 +98,7 @@ $config['phpass_hash_strength'] = 8;
 */
 $config['allow_registration'] = TRUE;
 $config['captcha_registration'] = TRUE;
-$config['email_activation'] = FALSE;
+$config['email_activation'] = TRUE;
 $config['email_activation_expire'] = 60*60*24*2;
 $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
@@ -190,8 +184,8 @@ $config['captcha_case_sensitive'] = TRUE;
 |--------------------------------------------------------------------------
 | Cool Captcha settings
 |
-| Upgrades: Replace the contents of the captcha folder with the new version.
-| No editing required.
+| When upgraidng Cool Captcha, simple replace the contents of the captcha folder
+| with the new version. No editing required.
 |--------------------------------------------------------------------------
 */
 $config['cool_captcha_folder'] = 'captcha';

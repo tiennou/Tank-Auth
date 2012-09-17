@@ -810,9 +810,6 @@ class Tank_auth
 	 * Open a notice page
 	 */
 	public function notice($page = NULL, $data = FALSE){
-		//$logout = $this->ci->session->flashdata('logout');
-		//if(is_null($page)) redirect('auth/login');
-		
 		$this->ci->session->set_flashdata('tankauth_allow_notice', TRUE);
 		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
 		redirect('notice/'.$page);

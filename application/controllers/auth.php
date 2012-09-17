@@ -15,14 +15,7 @@ class Auth extends CI_Controller
 
 	function index()
 	{
-		/*
-		if ($message = $this->session->flashdata('message')) {
-			$this->load->view('auth/general_message', array('message' => $message));
-		} else {
-			redirect('/auth/login/');
-		}
-		*/
-		redirect('/auth/login/');
+		redirect('auth/login');
 	}
 
 	/**
@@ -36,7 +29,7 @@ class Auth extends CI_Controller
 			redirect($this->config->item('login-success', 'tank_auth'));
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
-			redirect('/auth/send_again/');
+			redirect('auth/send_again');
 
 		} else {
 			$data['login_by_username'] = ($this->config->item('login_by_username', 'tank_auth') AND
@@ -87,7 +80,7 @@ class Auth extends CI_Controller
 						$this->tank_auth->notice('user-banned');
 
 					} elseif (isset($errors['not_activated'])) {				// not activated user
-						redirect('/auth/send_again/');
+						redirect('auth/send_again');
 
 					} else {													// fail
 						foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
@@ -136,7 +129,7 @@ class Auth extends CI_Controller
 			redirect($this->config->item('register_redirect', 'tank_auth'));
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
-			redirect('/auth/send_again/');
+			redirect('auth/send_again');
 
 		} elseif (!$this->config->item('allow_registration', 'tank_auth')) {	// registration is off
 			$this->tank_auth->notice('registration-disabled');
@@ -259,14 +252,6 @@ class Auth extends CI_Controller
 				}
 			}
 			
-			// Debug
-			/*
-			$this->load->database();
-			$query = $this->db->query('SELECT meta FROM users WHERE id=1');
-			$data['query'] = $query->row_array();
-			//$data['query'] = $this->tank_auth->get_profile_datatypes();
-			*/
-			
 			//$data['debug'] = $this->tank_auth->debug('14');
 			$data['use_username'] = $use_username;
 			$data['captcha_registration'] = $captcha_registration;
@@ -283,7 +268,7 @@ class Auth extends CI_Controller
 	function send_again()
 	{
 		if (!$this->tank_auth->is_logged_in(FALSE)) {							// not logged in or activated
-			redirect('/auth/login/');
+			redirect('auth/login');
 
 		} else {
 			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
@@ -347,7 +332,7 @@ class Auth extends CI_Controller
 			redirect('');
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
-			redirect('/auth/send_again/');
+			redirect('auth/send_again');
 
 		} else {
 			$this->form_validation->set_rules('login', 'Email or login', 'trim|required|xss_clean');
@@ -427,7 +412,7 @@ class Auth extends CI_Controller
 	function change_password()
 	{
 		if (!$this->tank_auth->is_logged_in()) {								// not logged in or not activated
-			redirect('/auth/login/');
+			redirect('auth/login');
 
 		} else {
 			$this->form_validation->set_rules('old_password', 'Old Password', 'trim|required|xss_clean');
@@ -460,7 +445,7 @@ class Auth extends CI_Controller
 	function change_email()
 	{
 		if (!$this->tank_auth->is_logged_in()) {								// not logged in or not activated
-			redirect('/auth/login/');
+			redirect('auth/login');
 
 		} else {
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
@@ -519,7 +504,7 @@ class Auth extends CI_Controller
 	function unregister()
 	{
 		if (!$this->tank_auth->is_logged_in()) {								// not logged in or not activated
-			redirect('/auth/login/');
+			redirect('auth/login');
 
 		} else {
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
@@ -540,18 +525,20 @@ class Auth extends CI_Controller
 			$this->load->view('auth/unregister_form', $data);
 		}
 	}
-
+	
 	/**
 	 * Show info message
 	 *
 	 * @param	string
 	 * @return	void
 	 */
+	/*
 	function _show_message($message)
 	{
 		$this->session->set_flashdata('message', $message);
-		redirect('/auth/');
+		redirect('auth');
 	}
+	*/
 
 	/**
 	 * Send email message of given type (activate, forgot_password, etc.)
@@ -584,7 +571,7 @@ class Auth extends CI_Controller
 	}
 
 	/**
-	 * Callback function. Check if CAPTCHA test is passed.
+	 * CALLBACK: Check if CAPTCHA test is passed.
 	 *
 	 * @param	string
 	 * @return	bool
@@ -619,7 +606,7 @@ class Auth extends CI_Controller
 	}
 
 	/**
-	 * Callback function. Check if reCAPTCHA test is passed.
+	 * CALLBACK: Check if reCAPTCHA test is passed.
 	 *
 	 * @return	bool
 	 */
@@ -640,7 +627,7 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 * Callback function. Blacklisted usernames.
+	 * CALLBACK: Blacklisted usernames.
 	 *
 	 */
 	function _check_username_blacklist($str){
@@ -657,7 +644,7 @@ class Auth extends CI_Controller
 	 }
 	 
 	 /**
-	  * Callback function. Check if username exists.
+	  * CALLBACK: Check if username exists.
 		*
 		*/
 	function _check_username_exists($str){
@@ -674,7 +661,7 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 * Zero ot allowed
+	 * CALLBACK: Zero not allowed
 	 */
 	function _not_zero($str){
 		if($str == '0'){
@@ -686,7 +673,7 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 * Null not allowed
+	 * CALLBACK: Null not allowed
 	 */
 	function _not_null($str){
 		if(is_null($str)){
