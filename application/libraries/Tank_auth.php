@@ -19,16 +19,17 @@ define('STATUS_NOT_ACTIVATED', '0');
 class Tank_auth
 {
 	private $error = array();
+	public $ci;
 
 	function __construct()
 	{
 		$this->ci =& get_instance();
 
 		$this->ci->load->config('tank_auth', TRUE);
-
 		$this->ci->load->library('session');
-		$this->ci->load->database();
 		$this->ci->load->model('tank_auth/users');
+		$this->ci->load->helper('url');
+		$this->ci->load->database();
 
 		// Try to autologin
 		$this->autologin();
@@ -810,6 +811,12 @@ class Tank_auth
 	 * Open a notice page
 	 */
 	public function notice($page, $data = FALSE){
+		// Create a new session if the old one gets deleted (from logout)
+		if(!$this->ci->session->userdata('user_id')){
+			$this->ci->session->sess_create();
+			$this->ci->session->set_flashdata('is_logged_out', TRUE);
+		}
+		
 		$this->ci->session->set_flashdata('tankauth_allow_notice', TRUE);
 		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
 		redirect('/notice/view/'.$page);

@@ -312,7 +312,7 @@ class Auth extends CI_Controller
 	 */
 	function activate()
 	{
-		if(!(bool)$this->uri->segment(4)) redirect('');
+		//if(!(bool)$this->uri->segment(4)) redirect('');
 		
 		$user_id		= $this->uri->segment(3);
 		$new_email_key	= $this->uri->segment(4);
@@ -320,7 +320,7 @@ class Auth extends CI_Controller
 		// Activate user
 		if ($this->tank_auth->activate_user($user_id, $new_email_key)) {		// success
 			$this->tank_auth->logout();
-			$this->tank_auth->notice('activation-completed');
+			$this->tank_auth->notice('activation-complete');
 
 		} else {																// fail
 			$this->tank_auth->notice('activation-failed');

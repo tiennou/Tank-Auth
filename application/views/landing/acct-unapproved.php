@@ -7,6 +7,6 @@
 
 <body class="<?php echo $body_class; ?>">
 <h1><?php echo $page_title; ?></h1>
-Your account has not yet been approved. Meh. <a href="<?php $logout_link; ?>">Logout now</a>
+Your account has not yet been approved. Meh. <a href="<?php echo $logout_link; ?>">Logout now</a>
 </body>
 </html>
