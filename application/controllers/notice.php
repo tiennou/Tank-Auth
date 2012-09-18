@@ -2,8 +2,15 @@
 
 class Notice extends CI_Controller {
 	
+	public function __construct(){
+		parent::__construct();
+		
+		$this->load->library('session');
+		$this->load->helper('url');
+	}
+	
 	public function index(){
-		redirect('auth/login');
+		redirect('/auth/login');
 	}
 	
 	public function view($page){
@@ -81,14 +88,14 @@ class Notice extends CI_Controller {
 								
 				
 				default:
-					redirect('auth/login');
+					redirect('/auth/login');
 			}
 			
 			$data['body_class'] = $page;
 			$this->load->view('landing/'.$page, $data);
 		}
 		else {
-			redirect('auth/login');
+			redirect('/auth/login');
 		}
 
 	}

@@ -1,7 +1,7 @@
 Tank Auth w/ Role-Based Access Control (RBAC)
 ==============================================
 
-> **Final round of testing:** Finally! A downloadable copy you can use. We're still making some last minute sweeps in case we missed something but overall this fork is now **ready for use.** I'll be running more tests and adding more features along the way should I think of something.
+> This version implements a **Role-Based Access Control** method popular in multiuser sites. A huge portion of Tank Auth was reworked to produce this highly-flexible authorization library. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
 This fork implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
@@ -11,17 +11,17 @@ New Features
 1. User-level permission overrides for added flexibility
 1. Add custom fields to your registration page
 1. Approve user registrations manually. They can register and activate but not enter until they are approved. By default, all registrants are auto-approved: `$config['acct_approval'] = TRUE`.
-1. Replaced the default captcha with [Cool Captcha](http://code.google.com/p/cool-php-captcha/)
+1. Now uses [Cool Captcha](http://code.google.com/p/cool-php-captcha/) as the default captcha (you can still switch to reCaptcha)
 1. Custom views for basic notifications (no more editing the lang file)
 
 Checklist (or what's left of it):
 
-1. **Cleanup in progress** - Fork can now be used. We're just doing some last minute sweeps before we _"formally"_ launch it.
 1. Buy myself an ice cream
 
-Requested features:
+Feature requests:
 
-1. Nothing yet.
+1. Manual approval of users - _COMPLETED_
+1. Custom views for easier customization of notifications - _COMPLETED_
 
 How to use Tank Auth w/ RBAC
 ------------------------------
@@ -35,7 +35,7 @@ Arguments for the methods below can be found in the *Tank_auth.php* library. Lif
 - `add_override()`, `remove_override()`, and `flip_override()`: Override permissions on a per-user basis. This allows you to give/take away permissions to users outside of their active role/s.
 - `add_role()`, `remove_role()`, `change_role()`: Basic role management for *Users*. If you're looking to create new roles in the `roles` table, I suggest you do it in SQL.
 
-###### Sample usage for `permit()`:
+Sample use for `permit()`:
 
 	// Controller
 	// The permit() method has 1 argument which is any value from the `permissions.permission` field
@@ -49,13 +49,16 @@ Arguments for the methods below can be found in the *Tank_auth.php* library. Lif
 
 More methods may have been added but those above are the ones you'll most likely be using.
 
+Directions on first Use
+-----------------------
+
 Below is a complete description on how to use this fork. I tried my best to be as thorough as possible so if there's anything unclear then let me know and I'll clear it up for you.
-### I. Empty all data
+### A. Empty all data
 1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
 
 > You may choose to retain the data in the `roles` table. These include the most common roles found in every system and can be of use in your project.
 
-### II. Populate the `permissions` and `roles` table
+### B. Populate the `permissions` and `roles` table
 1. **Populate the `permissions` table.** These list down the permissions your users can take. Keep values for the `permission` field short and it's recommended that the first word be a verb (e.g. 'create user').
 1. **Fields in `permissions` table: `description`, `parent`, and `sort`.** These are _recommended_ but are optional since they are used if you are displaying your options in HTML in case you allow certain roles to manage permissions through the use of a form. If you prefer to use SQL instead of creating a form then these can be left empty.
 1. **Populate the `roles` table: create the roles your project will use.** This RBAC setup allows users to have _1 or more roles_. This prevents an influx of creating too many roles to accomodate user responsibilities.
@@ -64,13 +67,13 @@ Below is a complete description on how to use this fork. I tried my best to be a
 
 > Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Part IV: Give user extra permissions outside of their role](https://github.com/enchance/Tank-Auth#iv-give-user-extra-permissions-outside-of-their-role-optional)).
 
-### III. Assigning roles to users
+### C. Assigning roles to users
 1. **Just assign the default role in the `roles.default` field and the system does the rest.** When a user signs up, he/she will be given that role.
 1. If the user is the very first user ever, they will automatically be given a role with the _role\_id_ of `1`. This is preferrably the _Admin_ role. This action bypasses the default role.
 
 > Roles are only given once a user has been activated and not before. This keeps your tables clean and free from any unnecessary inserts. Users are only given 1 role upon registration but if you want to add more roles to a user, you'll have to do it _after_ they're activated using the `add_role()` method to do so.
 
-### IV. Give user extra permissions outside of their role (Optional)
+### D. Give user extra permissions outside of their role (Optional)
 _Editor's note:_ This is used on a case-to-case basis only. It allows for extended flexibility on how you manage your users.
 
 1. **Customize your user's permissions.** If you want to give certain user's extra power outside of their role, you can use the `overrides` table for that. This table allows you to add permissions outside of a user's role as well as remove permissions already within their role.
@@ -142,7 +145,7 @@ How to use:
 	// Sample 4: DB w/ default value
 	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]', 'default_value');
 
-When getting data from the db with `'db[table.field1, table.field2]'`, `field1` becomes the key, and `field2` the value.
+When getting data from the db with `'[table.field1, table.field2]'`, `field1` is the key, and `field2` the value.
 	
 The callback `_not_zero` simply returns `FALSE` if the value is `0`.
 
@@ -158,6 +161,7 @@ How to use:
 
 Changelog
 ---------
+1. Place more than one custom dropdown field in your registration page and allow using db data for it - *Sep 17, 2012*
 1. Added views for each basic notification instead of using the lang file - *Sep 16, 2012*
 1. Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!) - *Sep 15, 2012*
 1. Initial RBAC functionality achieved: Add/Remove/Change roles - *Sep 12, 2012*
