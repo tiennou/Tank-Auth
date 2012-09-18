@@ -7,32 +7,23 @@
 | These details are used in emails sent by authentication library.
 |--------------------------------------------------------------------------
 */
-$config['website_name'] = 'Tank Auth Fork';
-$config['webmaster_email'] = 'enchance@gmail.com';
+$config['website_name'] = 'Tank Auth';
+$config['webmaster_email'] = 'admin@yoursite.com';
 
+/*
+|--------------------------------------------------------------------------
+| Blacklisted usernames
+|
+| 'username_blacklist' = Usernames which will be blocked upon registration
+| 'username_blacklist_prepend' = Each item will be appended to each element of 'username_blacklist' (increasing the # of blacklisted usernames)
+| 'username_exceptions' = Allow these names even if they're in the total list of blacklisted usernames
+|
+|--------------------------------------------------------------------------
+*/
 // Blacklisted usernames
-$blacklist = array('admin', 'administrator', 'mod', 'moderator', 'root');
-$prepend = array('the', 'sys', 'system', 'site', 'super');
-$exceptions = array('admin');
-
-// create blacklisted names
-$config['username_blacklist'] = $blacklist;
-foreach($blacklist as $val){
-	foreach($prepend as $v){
-		$username = $v.$val;
-		$config['username_blacklist'][] = $username;		
-	}
-}
-
-// remove from blacklisted names (allow certain names based on $exceptions)
-foreach($config['username_blacklist'] as $key=>$name){
-	foreach($exceptions as $exc){
-		if($exc == $name){
-			unset($config['username_blacklist'][$key]);
-			break;
-		}
-	}
-}
+$config['username_blacklist'] = array('admin', 'administrator', 'mod', 'moderator', 'root');
+$config['username_blacklist_prepend'] = array('the', 'sys', 'system', 'site', 'super');
+$config['username_exceptions'] = array();
 
 /*
 |--------------------------------------------------------------------------
@@ -43,12 +34,6 @@ foreach($config['username_blacklist'] as $key=>$name){
 |
 |--------------------------------------------------------------------------
 */
-$config['registration_fields'][] = array('aaa', 'Aaa', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
-$config['registration_fields'][] = array('bbb', 'Bbb', 'trim|required|callback__not_zero', 'dropdown', 'db[dbcountry.code, dbcountry.name]');
-$config['registration_fields'][] = array('ccc', 'Ccc', 'trim|required|callback__not_zero', 'dropdown', array('0'=>'- choose -', 'US'=>'USA', 'PH'=>'Philippines'));
-$config['registration_fields'][] = array('ddd', 'Ddd', 'trim|required|callback__not_zero', 'dropdown', 'db[dbcountry.code, dbcountry.name]');
-$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
-
 /*
 // Sample fields. Add as many as you like and customize as needed. View README.md for more info and how to use.
 $config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
@@ -69,7 +54,6 @@ $config['registration_fields'][] = array('category', 'Categories', 'trim|require
 | to your own controller with flashdata to restrict its viewing.
 |--------------------------------------------------------------------------
 */
-//$config['notice_key'] = 'allow_notice'; // The flashdata to check for. If TRUE then the landing page is displayed.
 $config['login-success'] = 'welcome';
 $config['logout-success'] = FALSE; // Set FALSE for landing page, '' for home, or 'xyz' for custom controller
 
@@ -104,7 +88,7 @@ $config['phpass_hash_strength'] = 8;
 */
 $config['allow_registration'] = TRUE;
 $config['captcha_registration'] = TRUE;
-$config['email_activation'] = FALSE;
+$config['email_activation'] = TRUE;
 $config['email_activation_expire'] = 60*60*24*2;
 $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
@@ -164,34 +148,10 @@ $config['forgot_password_expire'] = 60*15;
 
 /*
 |--------------------------------------------------------------------------
-| Captcha
-|
-| You can set captcha that created by Auth library in here.
-| 'captcha_path' = Directory where the catpcha will be created.
-| 'captcha_fonts_path' = Font in this directory will be used when creating captcha.
-| 'captcha_font_size' = Font size when writing text to captcha. Leave blank for random font size.
-| 'captcha_grid' = Show grid in created captcha.
-| 'captcha_expire' = Life time of created captcha before expired, default is 3 minutes (180 seconds).
-| 'captcha_case_sensitive' = Captcha case sensitive or not.
-|--------------------------------------------------------------------------
-*/
-/*
-$config['captcha_path'] = 'captcha/';
-$config['captcha_fonts_path'] = 'captcha/fonts/5.ttf';
-$config['captcha_width'] = 200;
-$config['captcha_height'] = 50;
-$config['captcha_font_size'] = 14;
-$config['captcha_grid'] = FALSE;
-$config['captcha_expire'] = 180;
-$config['captcha_case_sensitive'] = TRUE;
-*/
-
-/*
-|--------------------------------------------------------------------------
 | Cool Captcha settings
 |
-| Upgrades: Replace the contents of the captcha folder with the new version.
-| No editing required.
+| When upgraidng Cool Captcha, simple replace the contents of the captcha folder
+| with the new version. No editing required.
 |--------------------------------------------------------------------------
 */
 $config['cool_captcha_folder'] = 'captcha';

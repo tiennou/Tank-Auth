@@ -259,14 +259,6 @@ class Auth extends CI_Controller
 				}
 			}
 			
-			// Debug
-			/*
-			$this->load->database();
-			$query = $this->db->query('SELECT meta FROM users WHERE id=1');
-			$data['query'] = $query->row_array();
-			//$data['query'] = $this->tank_auth->get_profile_datatypes();
-			*/
-			
 			//$data['debug'] = $this->tank_auth->debug('14');
 			$data['use_username'] = $use_username;
 			$data['captcha_registration'] = $captcha_registration;
@@ -320,7 +312,6 @@ class Auth extends CI_Controller
 	 */
 	function activate()
 	{
-		
 		if(!(bool)$this->uri->segment(4)) redirect('');
 		
 		$user_id		= $this->uri->segment(3);
@@ -386,7 +377,7 @@ class Auth extends CI_Controller
 		$user_id		= $this->uri->segment(3);
 		$new_pass_key	= $this->uri->segment(4);
 
-		$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']|alpha_dash');
+		$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
 		$this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
 
 		$data['errors'] = array();
@@ -547,11 +538,13 @@ class Auth extends CI_Controller
 	 * @param	string
 	 * @return	void
 	 */
+	/*
 	function _show_message($message)
 	{
 		$this->session->set_flashdata('message', $message);
 		redirect('/auth/');
 	}
+	*/
 
 	/**
 	 * Send email message of given type (activate, forgot_password, etc.)
@@ -584,7 +577,7 @@ class Auth extends CI_Controller
 	}
 
 	/**
-	 * Callback function. Check if CAPTCHA test is passed.
+	 * CALLBACK: Check if CAPTCHA test is passed.
 	 *
 	 * @param	string
 	 * @return	bool
@@ -619,7 +612,7 @@ class Auth extends CI_Controller
 	}
 
 	/**
-	 * Callback function. Check if reCAPTCHA test is passed.
+	 * CALLBACK: Check if reCAPTCHA test is passed.
 	 *
 	 * @return	bool
 	 */
@@ -640,24 +633,46 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 * Callback function. Blacklisted usernames.
+	 * CALLBACK: Blacklisted usernames.
 	 *
 	 */
 	function _check_username_blacklist($str){
-		 $valid = TRUE;
-		 foreach($this->config->item('username_blacklist', 'tank_auth') as $val){
-			 if($str == $val){
-				 $this->form_validation->set_message('_check_username_blacklist', 'That username cannot be used.');
+		$blacklist = $this->config->item('username_blacklist', 'tank_auth');
+		$prepend = $this->config->item('username_blacklist_prepend', 'tank_auth');
+		$exceptions = $this->config->item('username_exceptions', 'tank_auth');
+		
+		// Generate complete list of blacklisted names
+		$full_blacklist = $blacklist;
+		foreach($blacklist as $val){
+			foreach($prepend as $v){
+				$full_blacklist[] = $v.$val;
+			}
+		}
+		
+		// Remove exceptions
+		foreach($full_blacklist as $key=>$name){
+			foreach($exceptions as $exc){
+				if($exc == $name){
+					unset($full_blacklist[$key]);
+					break;
+				}
+			}
+		}
+		
+		$valid = TRUE;
+		foreach($full_blacklist as $val){
+			if($str == $val){
+				$this->form_validation->set_message('_check_username_blacklist', 'That username cannot be used.');
 				$valid = FALSE;
 				break; 
-			 }
-		 }
+			}
+		}
 		 
 		 return $valid;
 	 }
 	 
 	 /**
-	  * Callback function. Check if username exists.
+	  * CALLBACK: Check if username exists.
 		*
 		*/
 	function _check_username_exists($str){
@@ -674,7 +689,7 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 * Zero ot allowed
+	 * CALLBACK: Zero not allowed
 	 */
 	function _not_zero($str){
 		if($str == '0'){
@@ -686,7 +701,7 @@ class Auth extends CI_Controller
 	}
 	
 	/**
-	 * Null not allowed
+	 * CALLBACK: Null not allowed
 	 */
 	function _not_null($str){
 		if(is_null($str)){
