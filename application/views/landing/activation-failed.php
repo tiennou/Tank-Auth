@@ -7,6 +7,6 @@
 
 <body class="<?php echo $body_class; ?>">
 <h1><?php echo $page_title; ?></h1>
-The activation code you entered is incorrect or expired.
+The activation code you entered is incorrect or has expired.
 </body>
 </html>

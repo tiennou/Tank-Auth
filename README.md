@@ -1,5 +1,6 @@
 Tank Auth w/ Role-Based Access Control (RBAC)
 ==============================================
+Version: Beta 1.2
 
 <<<<<<< HEAD
 > This version implements a **Role-Based Access Control** method popular in multiuser sites. A huge portion of Tank Auth was reworked to produce this highly-flexible authorization library. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
@@ -20,6 +21,7 @@ New Features
 
 Checklist (or what's left of it):
 
+1. Complete Beta testing phase
 1. Buy myself an ice cream
 
 Feature requests:
@@ -77,7 +79,7 @@ Below is a complete description on how to use this fork. I tried my best to be a
 1. **Fields in `roles` table: `role`, `full`, and `default`.** Keep the `role` field one-word and lowercase for easy typing since this is what you will use when running the `permit()` method. The `full` field is the full name of the role and can be used if you're displaying your role permissions in HTML. The `default` field specifies which role is the default role when users sign up.
 1. **Populate the `role_permissions` table.** Listing of all the permissions a role can take.
 
-> Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Part IV: Give user extra permissions outside of their role](https://github.com/enchance/Tank-Auth#iv-give-user-extra-permissions-outside-of-their-role-optional)).
+> Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Section D: Give user extra permissions outside of their role](https://github.com/enchance/Tank-Auth#iv-give-user-extra-permissions-outside-of-their-role-optional)).
 
 ### C. Assigning roles to users
 1. **Just assign the default role in the `roles.default` field and the system does the rest.** When a user signs up, he/she will be given that role.

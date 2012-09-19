@@ -305,7 +305,7 @@ class Auth extends CI_Controller
 	 */
 	function activate()
 	{
-		//if(!(bool)$this->uri->segment(4)) redirect('');
+		if(!$this->uri->segment(4)) redirect('/auth/login');
 		
 		$user_id		= $this->uri->segment(3);
 		$new_email_key	= $this->uri->segment(4);
