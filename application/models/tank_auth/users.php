@@ -735,7 +735,7 @@ class Users extends CI_Model
 			}
 			
 			// Get the ids
-			$query = $this->db->query("SELECT permission_id FROM permissions WHERE permission IN({$qmarks})", $permission);
+			$query = $this->db->query("SELECT permission_id FROM {$this->dbprefix}permissions WHERE permission IN({$qmarks})", $permission);
 			$row = $query->result_array();
 			
 			// Convert to single array (same as tank_auth->multi_to_single())

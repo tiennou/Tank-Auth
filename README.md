@@ -1,6 +1,6 @@
 Tank Auth w/ Role-Based Access Control (RBAC)
 ==============================================
-Version: Beta 1.2
+Version: Beta v2.1
 
 > This version implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
@@ -11,7 +11,7 @@ New Features
 1. Role-Based Access Control for multi-user sites. For more info on RBAC, refer to [this post](http://www.tonymarston.net/php-mysql/role-based-access-control.html 'Role-Based Access Control').
 1. User-level permission overrides for added flexibility
 1. Add custom fields to your registration page
-1. Approve user registrations manually. They can register and activate but not enter until they are approved. By default, all registrants are auto-approved: `$config['acct_approval'] = TRUE`.
+1. Approve user registrations manually. They can register and activate but not enter until they are approved. By default, all registrants are auto-approved: `$config['acct_approval'] = TRUE`
 1. Now uses [Cool Captcha](http://code.google.com/p/cool-php-captcha/) as the default captcha (you can still switch to reCaptcha)
 1. Custom views for basic notifications (no more editing the lang file)
 
