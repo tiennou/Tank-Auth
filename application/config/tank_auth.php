@@ -55,7 +55,7 @@ $config['registration_fields'][] = array('category', 'Categories', 'trim|require
 |--------------------------------------------------------------------------
 */
 $config['login-success'] = 'welcome';
-$config['logout-success'] = FALSE; // Set FALSE for landing page, '' for home, or 'xyz' for custom controller
+$config['logout-success'] = FALSE; // Set FALSE for landing page in /views/landing/, '' for home, or 'controller' for your custom controller
 
 /*
 |--------------------------------------------------------------------------
