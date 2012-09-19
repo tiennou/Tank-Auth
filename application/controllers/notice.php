@@ -5,12 +5,8 @@ class Notice extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		
-<<<<<<< HEAD
 		$this->load->library(array('session', 'tank_auth'));
 		$this->load->helper('url');
-=======
-		$this->load->library('session');
->>>>>>> f2cad11d6cbadda32df0ef1ebdf75ac13225888b
 	}
 	
 	public function index(){
@@ -69,7 +65,7 @@ class Notice extends CI_Controller {
 					$data['page_title'] = 'Confirmation Email Sent';
 					break;
 				case 'email-activated':
-					$data['login_link'] = site_url().'auth/login';
+					$data['login_link'] = base_url('auth/login');
 					$data['page_title'] = 'Your Email has been Activated';
 					break;
 				case 'email-failed':
