@@ -2,9 +2,8 @@ Tank Auth w/ Role-Based Access Control (RBAC)
 ==============================================
 Version: Beta v2.1
 
-> This version implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
+This version implements a **Role-Based Access Control** method popular in multiuser sites. A huge portion of Tank Auth was redeveloped to get this library working. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
-This fork implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
 New Features
 ------------
@@ -17,13 +16,13 @@ New Features
 
 Checklist (or what's left of it):
 
-1. Complete Beta testing phase
+1. Complete the Beta testing phase
 1. Buy myself an ice cream
 
 Feature requests:
 
-1. Manual approval of users - _COMPLETED_
-1. Custom views for easier customization of notifications - _COMPLETED_
+1. Manual approval of users - _COMPLETE_
+1. Custom views for easier customization of notifications - _COMPLETE_
 
 How to use Tank Auth w/ RBAC
 ------------------------------
@@ -54,7 +53,7 @@ More methods may have been added but those above are the ones you'll most likely
 Directions on first Use
 -----------------------
 
-Below is a complete description on how to use this fork. I tried my best to be as thorough as possible so if there's anything unclear then let me know and I'll clear it up for you.
+Below are instructions on how to use this fork. I tried my best to be as thorough as possible but if there's anything unclear then let me know and I'll clear it up for you.
 
 ### A. Empty all data
 1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
@@ -77,7 +76,7 @@ Below is a complete description on how to use this fork. I tried my best to be a
 > Roles are only given once a user has been activated and not before. This keeps your tables clean and free from any unnecessary inserts. Users are only given 1 role upon registration but if you want to add more roles to a user, you'll have to do it _after_ they're activated using the `add_role()` method to do so.
 
 ### D. Give user extra permissions outside of their role (Optional)
-_Editor's note:_ This is used on a case-to-case basis only. It allows for extended flexibility on how you manage your users.
+_Developer's note:_ This is used on a case-to-case basis only. It allows for extended flexibility on how you manage your users.
 
 1. **Customize your user's permissions.** If you want to give certain user's extra power outside of their role, you can use the `overrides` table for that. This table allows you to add permissions outside of a user's role as well as remove permissions already within their role.
 1. **Fields in `overrides` table: `allow`.** This says whether a user can or cannot do a certain permission. Use `add_override()` to add to a user's permissions. The `flip_override()` method flips the `allow` field from a `1` to a `0` and vice versa.
@@ -88,7 +87,7 @@ _Editor's note:_ This is used on a case-to-case basis only. It allows for extend
 Custom Registration Fields
 --------------------------
 
-Before you add any custom registration fields, make sure you've created a field for it in the `user_profiles` table. That's where your user's data will be saved. Do this and the sky won't fall on your head.
+Before you add any custom registration fields, make sure you've created a field for it in the `user_profiles` table. That's where your user's data will be transferred once they've been activated. Do this and the sky won't fall on your head.
 
 Assign custom fields using the `$config['registration_fields']` array.
 
@@ -164,7 +163,7 @@ How to use:
 
 Changelog
 ---------
-1. Place more than one custom dropdown field in your registration page and allow using db data for it - *Sep 17, 2012*
+1. Place more than one custom dropdown field in your registration page and use db data for it - *Sep 17, 2012*
 1. Added views for each basic notification instead of using the lang file - *Sep 16, 2012*
 1. Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!) - *Sep 15, 2012*
 1. Initial RBAC functionality achieved: Add/Remove/Change roles - *Sep 12, 2012*
