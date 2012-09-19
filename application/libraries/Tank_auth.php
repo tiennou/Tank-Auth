@@ -810,6 +810,7 @@ class Tank_auth
 	/**
 	 * Open a notice page
 	 */
+<<<<<<< HEAD
 	public function notice($page, $data = FALSE){
 		// Create a new session if the old one gets deleted (from logout)
 		if(!$this->ci->session->userdata('user_id')){
@@ -817,6 +818,9 @@ class Tank_auth
 			$this->ci->session->set_flashdata('is_logged_out', TRUE);
 		}
 		
+=======
+	public function notice($page = NULL, $data = FALSE){
+>>>>>>> f2cad11d6cbadda32df0ef1ebdf75ac13225888b
 		$this->ci->session->set_flashdata('tankauth_allow_notice', TRUE);
 		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
 		redirect('/notice/view/'.$page);

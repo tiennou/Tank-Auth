@@ -1,9 +1,13 @@
 Tank Auth w/ Role-Based Access Control (RBAC)
 ==============================================
 
+<<<<<<< HEAD
 > This version implements a **Role-Based Access Control** method popular in multiuser sites. A huge portion of Tank Auth was reworked to produce this highly-flexible authorization library. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
 This fork implements a **Role-Based Access Control** method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
+=======
+This version implements a **Role-Based Access Control** method popular in multiuser sites. A huge portion of Tank Auth was reworked to produce this highly-flexible authorization library. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
+>>>>>>> f2cad11d6cbadda32df0ef1ebdf75ac13225888b
 
 New Features
 ------------
@@ -21,7 +25,11 @@ Checklist (or what's left of it):
 Feature requests:
 
 1. Manual approval of users - _COMPLETED_
+<<<<<<< HEAD
 1. Custom views for easier customization of notifications - _COMPLETED_
+=======
+2. Custom views for easier customization of notifications - _COMPLETED_
+>>>>>>> f2cad11d6cbadda32df0ef1ebdf75ac13225888b
 
 How to use Tank Auth w/ RBAC
 ------------------------------
@@ -53,6 +61,10 @@ Directions on first Use
 -----------------------
 
 Below is a complete description on how to use this fork. I tried my best to be as thorough as possible so if there's anything unclear then let me know and I'll clear it up for you.
+<<<<<<< HEAD
+=======
+
+>>>>>>> f2cad11d6cbadda32df0ef1ebdf75ac13225888b
 ### A. Empty all data
 1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
 

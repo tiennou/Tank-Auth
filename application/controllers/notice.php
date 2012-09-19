@@ -5,8 +5,12 @@ class Notice extends CI_Controller {
 	public function __construct(){
 		parent::__construct();
 		
+<<<<<<< HEAD
 		$this->load->library(array('session', 'tank_auth'));
 		$this->load->helper('url');
+=======
+		$this->load->library('session');
+>>>>>>> f2cad11d6cbadda32df0ef1ebdf75ac13225888b
 	}
 	
 	public function index(){
