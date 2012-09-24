@@ -13,11 +13,6 @@ New Features
 1. Now uses [Cool Captcha](http://code.google.com/p/cool-php-captcha/) as the default captcha (you can still switch to reCaptcha)
 1. Custom views for basic notifications (no more editing the lang file)
 
-Checklist (or what's left of it):
-
-1. Complete the Beta testing phase
-1. Buy myself an ice cream
-
 Feature requests:
 
 1. Manual approval of users - _COMPLETE_

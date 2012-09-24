@@ -663,7 +663,7 @@ class Tank_auth
 	 *
 	 * @param array $result_array: The result of $query->result_array()
 	 */
-	public function multi_to_assoc($result_array, $value_only = FALSE){
+	public function multi_to_assoc($result_array){
 		foreach($result_array as $val){
 			$val = array_values($val);
 			$arr[$val[0]] = $val[1];
