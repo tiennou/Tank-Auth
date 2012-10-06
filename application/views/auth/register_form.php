@@ -1,12 +1,5 @@
 <?php
 
-include_once 'krumo/class.krumo.php';
-//krumo($registration_fields);
-//krumo($query);
-//krumo($debug);
-
-//krumo($dropdown_items);
-
 if ($use_username) {
 	$username = array(
 		'name'	=> 'username',
