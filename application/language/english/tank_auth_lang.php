@@ -35,6 +35,44 @@ $lang['auth_subject_forgot_password'] = 'Forgot your password on %s?';
 $lang['auth_subject_reset_password'] = 'Your new password on %s';
 $lang['auth_subject_change_email'] = 'Your new email address on %s';
 
+// Form messages
+$lang['auth_form_login'] = "Login";
+$lang['auth_form_username'] = "Username";
+$lang['auth_form_email'] = "Email address";
+$lang['auth_form_email_login'] = "Email address or login";
+$lang['auth_form_password'] = "Password";
+$lang['auth_form_password_confirm'] = "Confirm Password";
+$lang['auth_form_remember'] = "Remember me";
+
+$lang['auth_form_confirmation_code'] = "Confirmation Code";
+
+$lang['auth_form_new_password'] = "New Password";
+$lang['auth_form_new_password_confirm'] = "Confirm new Password";
+$lang['auth_form_old_password'] = "Old Password";
+$lang['auth_form_new_email'] = "New email address";
+
+$lang['auth_form_change_email_submit'] = "Send confirmation email";
+$lang['auth_form_change_password_submit'] = "Change Password";
+$lang['auth_form_forgot_password_submit'] = "Get a new password";
+$lang['auth_form_login_submit'] = "Let me in";
+$lang['auth_form_register_submit'] = "Register";
+$lang['auth_form_reset_password_submit'] = "Reset Password";
+$lang['auth_form_send_again_submit'] = "Send";
+$lang['auth_form_unregister_submit'] = "Delete account";
+
+// Page names
+$lang['auth_page_login'] = "Login";
+$lang['auth_page_register'] = "Register";
+$lang['auth_page_forgot_password'] = "Forgot password";
+
+// Captcha
+$lang['auth_captcha_reload'] = "Get another CAPTCHA";
+$lang['auth_captcha_reload_audio'] = "Get an audio CAPTCHA";
+$lang['auth_captcha_reload_image'] = "Get an image CAPTCHA";
+$lang['auth_captcha_enter_image'] = "Enter the words above";
+$lang['auth_captcha_enter_audio'] = "Enter the numbers you hear";
+$lang['auth_captcha_enter'] = "Enter the code exactly as it appears";
+
 
 /* End of file tank_auth_lang.php */
 /* Location: ./application/language/english/tank_auth_lang.php */
