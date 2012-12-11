@@ -42,27 +42,27 @@ $captcha = array(
 <table>
 	<?php if ($use_username) : ?>
 	<tr>
-		<td><?php echo form_label('Username', $username['id']); ?></td>
+		<td><?php echo form_label(lang('auth_form_username'), $username['id']); ?></td>
 		<td><?php echo form_input($username); ?></td>
 		<td style="color: red;"><?php echo form_error($username['name']); ?><?php echo isset($errors[$username['name']]) ? $errors[$username['name']] : ''; ?></td>
 	</tr>
 	<?php endif; ?>
 	<tr>
-		<td><?php echo form_label('Email Address', $email['id']); ?></td>
+		<td><?php echo form_label(lang('auth_form_email'), $email['id']); ?></td>
 		<td><?php echo form_input($email); ?></td>
 		<td style="color: red;"><?php echo form_error($email['name']); ?><?php echo isset($errors[$email['name']]) ? $errors[$email['name']] : ''; ?></td>
 	</tr>
 	<tr>
-		<td><?php echo form_label('Password', $password['id']); ?></td>
+		<td><?php echo form_label(lang('auth_form_password'), $password['id']); ?></td>
 		<td><?php echo form_password($password); ?></td>
 		<td style="color: red;"><?php echo form_error($password['name']); ?></td>
 	</tr>
 	<tr>
-		<td><?php echo form_label('Confirm Password', $confirm_password['id']); ?></td>
+		<td><?php echo form_label(lang('auth_form_password_confirm'), $confirm_password['id']); ?></td>
 		<td><?php echo form_password($confirm_password); ?></td>
 		<td style="color: red;"><?php echo form_error($confirm_password['name']); ?></td>
 	</tr>
-	
+
   <?php if(isset($registration_fields)) : foreach($registration_fields as $val) : ?>
 		<?php
 			list($name, $label,, $type) = $val;
@@ -117,10 +117,10 @@ $captcha = array(
         <td style="color: red;"><?php echo form_error($name); ?><?php echo isset($errors[$name]) ? $errors[$name] : ''; ?></td>
       </tr>
     <?php endif; ?>
-  
-  <?php endforeach; endif; ?>	
-	
-	
+
+  <?php endforeach; endif; ?>
+
+
 
 	<?php if ($captcha_registration) : if ($use_recaptcha) : ?>
 	<tr>
@@ -128,15 +128,15 @@ $captcha = array(
 			<div id="recaptcha_image"></div>
 		</td>
 		<td>
-			<a href="javascript:Recaptcha.reload()">Get another CAPTCHA</a>
-			<div class="recaptcha_only_if_image"><a href="javascript:Recaptcha.switch_type('audio')">Get an audio CAPTCHA</a></div>
-			<div class="recaptcha_only_if_audio"><a href="javascript:Recaptcha.switch_type('image')">Get an image CAPTCHA</a></div>
+			<a href="javascript:Recaptcha.reload()"><?php echo lang('auth_captcha_reload'); ?></a>
+			<div class="recaptcha_only_if_image"><a href="javascript:Recaptcha.switch_type('audio')"><?php echo lang('auth_captcha_reload_audio'); ?></a></div>
+			<div class="recaptcha_only_if_audio"><a href="javascript:Recaptcha.switch_type('image')"><?php echo lang('auth_captcha_reload_image');?></a></div>
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<div class="recaptcha_only_if_image">Enter the words above</div>
-			<div class="recaptcha_only_if_audio">Enter the numbers you hear</div>
+			<div class="recaptcha_only_if_image"><?php echo lang('auth_captcha_enter_image'); ?></div>
+			<div class="recaptcha_only_if_audio"><?php echo lang('auth_captcha_enter_audio'); ?></div>
 		</td>
 		<td><input type="text" id="recaptcha_response_field" name="recaptcha_response_field" /></td>
 		<td style="color: red;"><?php echo form_error('recaptcha_response_field'); ?></td>
@@ -146,14 +146,13 @@ $captcha = array(
 	<tr>
 		<td>&nbsp;</td>
 		<td>
-			<p>
-				Write the following word:<br>
+			<p><?php echo lang('auth_captcha_enter'); ?><br>
 				<img src="<?php echo $captcha_html; ?>" id="captcha" /><br />
-			<a class="small" href="javascript:void(0)" onclick="document.getElementById('captcha').src='<?php echo site_url(); ?>captcha/captcha.php?'+Math.random(); document.getElementById('captcha-form').focus();" id="change-image">Not readable? Change text.</a><br/><br/><input type="text" name="captcha" id="captcha-form" autocomplete="off" /></p>
+			<a class="small" href="javascript:void(0)" onclick="document.getElementById('captcha').src='<?php echo site_url(); ?>captcha/captcha.php?'+Math.random(); document.getElementById('captcha-form').focus();" id="change-image"><?php echo lang('auth_captcha_change'); ?></a><br/><br/><input type="text" name="captcha" id="captcha-form" autocomplete="off" /></p>
 		</td>
 		<td style="color: red;"><?php echo form_error('captcha'); ?><?php echo isset($errors['captcha']) ? $errors['captcha'] : ''; ?></td>
 	</tr>
 	<?php endif; endif; ?>
 </table>
-<?php echo form_submit('register', 'Register'); ?>
+<?php echo form_submit('register', lang('auth_form_register_submit')); ?>
 <?php echo form_close(); ?>

@@ -37,9 +37,9 @@ class Auth extends CI_Controller
 					$this->config->item('use_username', 'tank_auth'));
 			$data['login_by_email'] = $this->config->item('login_by_email', 'tank_auth');
 
-			$this->form_validation->set_rules('login', 'Login', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('remember', 'Remember me', 'integer');
+			$this->form_validation->set_rules('login', 'lang:auth_form_login', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('password', 'lang:auth_form_password', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('remember', 'lang:auth_form_remember_me', 'integer');
 
 			// Get login for counting attempts to login
 			if ($this->config->item('login_count_attempts', 'tank_auth') AND
@@ -52,9 +52,9 @@ class Auth extends CI_Controller
 			$data['use_recaptcha'] = $this->config->item('use_recaptcha', 'tank_auth');
 			if ($this->tank_auth->is_max_login_attempts_exceeded($login)) {
 				if ($data['use_recaptcha'])
-					$this->form_validation->set_rules('recaptcha_response_field', 'Confirmation Code', 'trim|xss_clean|required|callback__check_recaptcha');
+					$this->form_validation->set_rules('recaptcha_response_field', 'lang:auth_form_confirmation_code', 'trim|xss_clean|required|callback__check_recaptcha');
 				else
-					$this->form_validation->set_rules('captcha', 'Confirmation Code', 'trim|xss_clean|required|callback__check_captcha');
+					$this->form_validation->set_rules('captcha', 'lang:auth_form_confirmation_code', 'trim|xss_clean|required|callback__check_captcha');
 			}
 			$data['errors'] = array();
 
@@ -126,11 +126,11 @@ class Auth extends CI_Controller
 		} else {
 			$use_username = $this->config->item('use_username', 'tank_auth');
 			if ($use_username) {
-				$this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|callback__check_username_blacklist|callback__check_username_exists');
+				$this->form_validation->set_rules('username', 'lang:auth_form_username', 'trim|required|xss_clean|min_length['.$this->config->item('username_min_length', 'tank_auth').']|max_length['.$this->config->item('username_max_length', 'tank_auth').']|callback__check_username_blacklist|callback__check_username_exists');
 			}
-			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
-			$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|xss_clean|matches[password]');
+			$this->form_validation->set_rules('email', 'lang:auth_form_email', 'trim|required|xss_clean|valid_email');
+			$this->form_validation->set_rules('password', 'lang:auth_form_password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+			$this->form_validation->set_rules('confirm_password', 'lang:auth_form_password_confirm', 'trim|required|xss_clean|matches[password]');
 
 			// Check for additional fields
 			$registration_fields = (bool)$this->config->item('registration_fields', 'tank_auth') ? $this->config->item('registration_fields', 'tank_auth') : array();
@@ -168,9 +168,9 @@ class Auth extends CI_Controller
 			$use_recaptcha			= $this->config->item('use_recaptcha', 'tank_auth');
 			if ($captcha_registration) {
 				if ($use_recaptcha) {
-					$this->form_validation->set_rules('recaptcha_response_field', 'Confirmation Code', 'trim|xss_clean|required|callback__check_recaptcha');
+					$this->form_validation->set_rules('recaptcha_response_field', 'lang:auth_form_confirmation_code', 'trim|xss_clean|required|callback__check_recaptcha');
 				} else {
-					$this->form_validation->set_rules('captcha', 'Confirmation Code', 'trim|xss_clean|required|callback__check_captcha');
+					$this->form_validation->set_rules('captcha', 'lang:auth_form_confirmation_code', 'trim|xss_clean|required|callback__check_captcha');
 				}
 			}
 			$data['errors'] = array();
@@ -227,7 +227,7 @@ class Auth extends CI_Controller
 						unset($data['password']); // Clear password (just for any case)
 					}
 
-					$this->_show_message($this->lang->line('auth_message_registration_completed_2').' '.anchor('/auth/login/', lang('auth_page_login')), TRUE);
+					$this->_show_message($this->lang->line('auth_message_registration_completed_2').' '.anchor('/auth/login/', $this->lang->line('auth_page_login')), TRUE);
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -261,7 +261,7 @@ class Auth extends CI_Controller
 			redirect('auth/login');
 
 		} else {
-			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
+			$this->form_validation->set_rules('email', 'lang:auth_form_email', 'trim|required|xss_clean|valid_email');
 
 			$data['errors'] = array();
 
@@ -306,7 +306,6 @@ class Auth extends CI_Controller
 		if ($this->tank_auth->activate_user($user_id, $new_email_key)) {		// success
 			$this->tank_auth->logout();
 			$this->_show_message($this->lang->line('auth_message_activation_completed').' '.anchor('/auth/login/', lang('auth_page_login')), TRUE);
-
 		} else {																// fail
 			$this->_show_message($this->lang->line('auth_message_activation_failed'), FALSE);
 		}
@@ -326,7 +325,7 @@ class Auth extends CI_Controller
 			redirect('auth/send_again');
 
 		} else {
-			$this->form_validation->set_rules('login', 'Email or login', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('login', 'lang:auth_form_email_login', 'trim|required|xss_clean');
 
 			$data['errors'] = array();
 
@@ -362,8 +361,8 @@ class Auth extends CI_Controller
 		$user_id		= $this->uri->segment(3);
 		$new_pass_key	= $this->uri->segment(4);
 
-		$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
-		$this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
+		$this->form_validation->set_rules('new_password', 'lang:auth_form_new_password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+		$this->form_validation->set_rules('confirm_new_password', 'lang:auth_form_new_password_confirm', 'trim|required|xss_clean|matches[new_password]');
 
 		$data['errors'] = array();
 
@@ -406,10 +405,10 @@ class Auth extends CI_Controller
 			redirect('auth/login');
 
 		} else {
-			$this->form_validation->set_rules('old_password', 'Old Password', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('old_password', 'lang:auth_form_old_password', 'trim|required|xss_clean');
 
-			$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
-			$this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
+			$this->form_validation->set_rules('new_password', 'lang:auth_form_new_password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
+			$this->form_validation->set_rules('confirm_new_password', 'lang:auth_form_new_password_confirm', 'trim|required|xss_clean|matches[new_password]');
 
 			$data['errors'] = array();
 
@@ -439,8 +438,8 @@ class Auth extends CI_Controller
 			redirect('auth/login');
 
 		} else {
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
-			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
+			$this->form_validation->set_rules('password', 'lang:auth_form_password', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('email', 'lang:auth_form_email', 'trim|required|xss_clean|valid_email');
 
 			$data['errors'] = array();
 
@@ -480,6 +479,7 @@ class Auth extends CI_Controller
 		// Reset email
 		if ($this->tank_auth->activate_new_email($user_id, $new_email_key)) {	// success
 			$this->tank_auth->logout();
+
 			$this->_show_message($this->lang->line('auth_message_new_email_activated').' '.anchor('/auth/login/', lang('auth_page_login')), FALSE);
 
 		} else {																// fail
@@ -498,7 +498,7 @@ class Auth extends CI_Controller
 			redirect('auth/login');
 
 		} else {
-			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean');
+			$this->form_validation->set_rules('password', 'lang:auth_form_password', 'trim|required|xss_clean');
 
 			$data['errors'] = array();
 
