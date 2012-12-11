@@ -218,6 +218,9 @@ class Auth extends CI_Controller
 
 					$this->_send_email('activate', $data['email'], $data);
 
+					/* Provoke a logout after confirmation email sent */
+					$this->tank_auth->logout();
+
 					$this->_show_message(sprintf($this->lang->line('auth_message_activation_email_sent'), $data['email']));
 
 				} else {
