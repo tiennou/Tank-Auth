@@ -10,6 +10,7 @@ if ($this->config->item('use_username', 'tank_auth')) {
 	$login_label = lang('auth_form_email_login');
 } else {
 	$login_label = lang('auth_form_email');
+	$login['type'] = 'email';
 }
 ?>
 <?php echo form_open($this->uri->uri_string()); ?>

@@ -11,6 +11,7 @@ if ($use_username) {
 $email = array(
 	'name'	=> 'email',
 	'id'	=> 'email',
+	'type' => 'email',
 	'value'	=> set_value('email'),
 	'maxlength'	=> 80,
 	'size'	=> 30,

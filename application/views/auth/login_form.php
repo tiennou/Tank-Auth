@@ -12,6 +12,7 @@ if ($login_by_username AND $login_by_email) {
 	$login_label = lang('auth_form_login');
 } else {
 	$login_label = lang('auth_form_email');
+	$login['type'] = 'email';
 }
 $password = array(
 	'name'	=> 'password',
