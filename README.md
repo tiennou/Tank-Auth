@@ -22,7 +22,7 @@ How to use Tank Auth w/ RBAC
 ------------------------------
 ### New Methods
 
-Arguments for the methods below can be found in the *Tank_auth.php* library. Lift those sticky fingers and *Cmd/Ctrl-F* like your sex life depended on it!
+Arguments for the methods below can be found in the *Tank_auth.php* library. Lift those sticky fingers and *Cmd/Ctrl+F* like your sex life depended on it!
 
 - `permit()`: The most important method of all! This checks if the user is allowed to do a certain permission (e.g. view a page)
 - `add_permission()` and `remove_permission()`: Add/Remove permissions of roles. All permissions are listed in the `permissions.permission` table.
@@ -42,34 +42,43 @@ Sample use for `permit()`:
 		// Fail
 	}
 
-More methods may have been added but those above are the ones you'll most likely be using.
-
 Directions on first Use
 -----------------------
 
 Below are instructions on how to use this fork. I tried my best to be as thorough as possible but if there's anything unclear then let me know and I'll clear it up for you.
 
-### A. Empty all data
+### I. Empty all data
 1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
 
 > You may choose to retain the data in the `roles` table. These include the most common roles found in every system and can be of use in your project.
 
-### B. Populate the `permissions` and `roles` table
+### II. Populate the `permissions` and `roles` table
 1. **Populate the `permissions` table.** These list down the permissions your users can take. Keep values for the `permission` field short and it's recommended that the first word be a verb (e.g. 'create user').
 1. **Fields in `permissions` table: `description`, `parent`, and `sort`.** These are _recommended_ but are optional since they are used if you are displaying your options in HTML in case you allow certain roles to manage permissions through the use of a form. If you prefer to use SQL instead of creating a form then these can be left empty.
 1. **Populate the `roles` table: create the roles your project will use.** This RBAC setup allows users to have _1 or more roles_. This prevents an influx of creating too many roles to accomodate user responsibilities.
 1. **Fields in `roles` table: `role`, `full`, and `default`.** Keep the `role` field one-word and lowercase for easy typing since this is what you will use when running the `permit()` method. The `full` field is the full name of the role and can be used if you're displaying your role permissions in HTML. The `default` field specifies which role is the default role when users sign up.
 1. **Populate the `role_permissions` table.** Listing of all the permissions a role can take.
 
-> Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Section D: Give user extra permissions outside of their role](https://github.com/enchance/Tank-Auth#iv-give-user-extra-permissions-outside-of-their-role-optional)).
+> Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Section IV: Give user extra permissions outside of their role](https://github.com/enchance/Tank-Auth#d-give-user-extra-permissions-outside-of-their-role-optional)).
 
-### C. Assigning roles to users
+### III. Assigning roles to users
 1. **Just assign the default role in the `roles.default` field and the system does the rest.** When a user signs up, he/she will be given that role.
 1. If the user is the very first user ever, they will automatically be given a role with the _role\_id_ of `1`. This is preferrably the _Admin_ role. This action bypasses the default role.
 
+The `roles` default schema:
+
+	mysql> SELECT * FROM roles;
+	+---------+-------+---------------+---------+
+	| role_id | role  | full          | default |
+	+---------+-------+---------------+---------+
+	|       1 | admin | Administrator |       0 |
+	|       2 | mod   | Moderator     |       0 |
+	|       3 | user  | User          |       1 |
+	+---------+-------+---------------+---------+
+
 > Roles are only given once a user has been activated and not before. This keeps your tables clean and free from any unnecessary inserts. Users are only given 1 role upon registration but if you want to add more roles to a user, you'll have to do it _after_ they're activated using the `add_role()` method to do so.
 
-### D. Give user extra permissions outside of their role (Optional)
+### IV. Give user extra permissions outside of their role (Optional)
 _Developer's note:_ This is used on a case-to-case basis only. It allows for extended flexibility on how you manage your users.
 
 1. **Customize your user's permissions.** If you want to give certain user's extra power outside of their role, you can use the `overrides` table for that. This table allows you to add permissions outside of a user's role as well as remove permissions already within their role.

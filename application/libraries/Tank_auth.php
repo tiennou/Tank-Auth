@@ -689,9 +689,9 @@ class Tank_auth
 	}
 	
 	/**
-	 * User has permission to do an action
+	 * Check if user has permission to do an action
 	 *
-	 * @param string $permission: The permission you want to check for from the `permissions.permission` table
+	 * @param string $permission: The permission you want to check for from the `permissions.permission` table.
 	 * @return bool
 	 */
 	public function permit($permission){
@@ -759,7 +759,7 @@ class Tank_auth
 	}
 	
 	/**
-	 * Permission mangement methods
+	 * Permission management methods
 	 */
 	public function add_permission($permission, $role){
 		return $this->ci->users->add_permission($permission, $role);
