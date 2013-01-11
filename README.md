@@ -1,22 +1,16 @@
-Tank Auth w/ Role-Based Access Control (RBAC)
-==============================================
-Version: Beta v2.2
+Tank Auth v2.0 w/ Role-Based Access Control (RBAC)
+==================================================
 
-This version implements a Role-Based Access Control method popular in multiuser sites. A huge portion of Tank Auth was redeveloped to get this library working. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
+Tank Auth now supports a Role-Based Access Control method popular in multiuser sites. This new release is bursting with so much vitamins and minerals it's practically its own food group! Okay, maybe not.
 
 New Features
 ------------
-1. Role-Based Access Control for multi-user sites. For more info on RBAC, refer to [this post](http://www.tonymarston.net/php-mysql/role-based-access-control.html 'Role-Based Access Control').
-1. User-level permission overrides for added flexibility
-1. Add custom fields to your registration page
+1. Role-Based Access Control. For more info on RBAC, refer to [this post](http://www.tonymarston.net/php-mysql/role-based-access-control.html 'Role-Based Access Control').
+1. Permission overrides at the user level for added flexibility
+1. Custom registration fields
 1. Approve user registrations manually. Users can now register and activate but not enter until they are approved. By default, all registrants are auto-approved: `$config['acct_approval'] = TRUE`
-1. Now uses [Cool Captcha](http://code.google.com/p/cool-php-captcha/) as the default captcha (you can still switch to reCaptcha)
-1. Custom views for basic notifications (no more editing the lang file)
-
-Feature requests:
-
-1. Manual approval of users - _COMPLETE_
-1. Custom views for easier customization of notifications - _COMPLETE_
+1. Uses [Cool Captcha](http://code.google.com/p/cool-php-captcha/ 'Cool Captcha is awesome') as the default captcha (you can still switch to reCaptcha)
+1. No  more editing the lang file with custom views for basic notifications
 
 How to use Tank Auth w/ RBAC
 ------------------------------
@@ -42,13 +36,16 @@ Sample use for `permit()`:
 		// Fail
 	}
 
-Directions on first Use
------------------------
+Directions on first use (RBAC enabled)
+------------------------------------------
 
-Below are instructions on how to use this fork. I tried my best to be as thorough as possible but if there's anything unclear then let me know and I'll clear it up for you.
+Below are instructions on how to use Tank Auth if RBAC is enabled. If you don't have RBAC enabled then read on just for your viewing pleasure.
 
-### I. Empty all data
-1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values I used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
+### I. Empty all sample data
+
+If you imported data from **sample-RBAC.sql** then follow this step. If not then move on to *Step 2*.
+
+1. **Clear all table data: `roles`, `permissions`, and `role_permissions` table.** These are values used for testing and are also examples on how to populate these 3 tables. You may opt to keep them to familiarize yourself of its use.
 
 > You may choose to retain the data in the `roles` table. These include the most common roles found in every system and can be of use in your project.
 
@@ -59,13 +56,13 @@ Below are instructions on how to use this fork. I tried my best to be as thoroug
 1. **Fields in `roles` table: `role`, `full`, and `default`.** Keep the `role` field one-word and lowercase for easy typing since this is what you will use when running the `permit()` method. The `full` field is the full name of the role and can be used if you're displaying your role permissions in HTML. The `default` field specifies which role is the default role when users sign up.
 1. **Populate the `role_permissions` table.** Listing of all the permissions a role can take.
 
-> Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Section IV: Give user extra permissions outside of their role](https://github.com/enchance/Tank-Auth#d-give-user-extra-permissions-outside-of-their-role-optional)).
+> Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Section IV: Give user extra permissions outside of their role](#d-give-user-extra-permissions-outside-of-their-role-optional)).
 
 ### III. Assigning roles to users
 1. **Just assign the default role in the `roles.default` field and the system does the rest.** When a user signs up, he/she will be given that role.
 1. If the user is the very first user ever, they will automatically be given a role with the _role\_id_ of `1`. This is preferrably the _Admin_ role. This action bypasses the default role.
 
-The `roles` default schema:
+Sample data from the `roles` schema:
 
 	mysql> SELECT * FROM roles;
 	+---------+-------+---------------+---------+
@@ -76,15 +73,17 @@ The `roles` default schema:
 	|       3 | user  | User          |       1 |
 	+---------+-------+---------------+---------+
 
+The column `full` is there in case you need to output the name of the role in HTML. It can be left empty if you'll never use it.
+
 > Roles are only given once a user has been activated and not before. This keeps your tables clean and free from any unnecessary inserts. Users are only given 1 role upon registration but if you want to add more roles to a user, you'll have to do it _after_ they're activated using the `add_role()` method to do so.
 
-### IV. Give user extra permissions outside of their role (Optional)
-_Developer's note:_ This is used on a case-to-case basis only. It allows for extended flexibility on how you manage your users.
+### IV. (Optional) Give user extra permissions outside of their role
+__Developer's note:__ This is used on a case-to-case basis only. It allows for extended flexibility on how you manage your users.
 
 1. **Customize your user's permissions.** If you want to give certain user's extra power outside of their role, you can use the `overrides` table for that. This table allows you to add permissions outside of a user's role as well as remove permissions already within their role.
 1. **Fields in `overrides` table: `allow`.** This says whether a user can or cannot do a certain permission. Use `add_override()` to add to a user's permissions. The `flip_override()` method flips the `allow` field from a `1` to a `0` and vice versa.
 
-> When using the `permit()` method, this checks your existing permissions from your role/s as well as any overrides you may have on certain permissions. Cool!
+> When using the `permit()` method, Tank Auth checks your existing permissions from your role/s as well as any overrides you might have before returning a value. Cool!
 
 
 Custom Registration Fields
@@ -142,17 +141,17 @@ How to use:
 	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', $selection);
 	
 	// Sample 2: Manual w/ default value
-	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', $selection, 'default_value');
+	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', $selection, 'PH');
 
 	// Sample 3: Get data for select from db
 	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]');
 	
 	// Sample 4: DB w/ default value
-	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]', 'default_value');
+	$config['registration_fields'][] = array('country', 'Country', 'trim|required|callback__not_zero', 'dropdown', '[table.field1, table.field2]', 'PH');
 
 When getting data from the db with `'[table.field1, table.field2]'`, `field1` is the key, and `field2` the value.
 	
-The callback `_not_zero` simply returns `FALSE` if the value is `0`.
+The callback `_not_zero()` in `controller/auth.php` simply returns `FALSE` if the value is `0`.
 
 **4. Checkbox format:** *`array(Name, Label, Rules, 'checkbox', Checkbox Label, Default Checked)`*
 
@@ -164,12 +163,21 @@ How to use:
 	// Sample 2: checkbox is checked by default
 	$config['registration_fields'][] = array('money', 'Money', 'trim|numeric', 'checkbox', 'I want money', TRUE);
 
+Credits
+-------
+*Authors:*
+<br />**v1.0:** [@ilkon](https://github.com/ilkon)
+<br />**v2.0:** [@enchance](https://github.com/enchance/ 'See what else @enchance is working on'), [@tiennou](https://github.com/tiennou/)
+
+Tank Auth w/ RBAC was based on the fork created by [@enchance](https://github.com/enchance/ 'See what else @enchance is working on').
+
+
 Changelog
 ---------
-1. Place more than one custom dropdown field in your registration page and use db data for it - *Sep 17, 2012*
-1. Added views for each basic notification instead of using the lang file - *Sep 16, 2012*
-1. Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!) - *Sep 15, 2012*
-1. Initial RBAC functionality achieved: Add/Remove/Change roles - *Sep 12, 2012*
-1. Check permissions with the `permit()` method which allows you to override permissions on a user-level scope - *Sep 11, 2012*
-1. Add custom fields to the registration page - *Sep 10, 2012*
-1. Implement Cool Captcha instead of the default captcha - *Aug 29, 2012*
+- Place more than one custom dropdown field in your registration page and use db data for it - *Sep 17, 2012*
+- Added views for each basic notification instead of using the lang file - *Sep 16, 2012*
+- Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!) - *Sep 15, 2012*
+- Initial RBAC functionality achieved: Add/Remove/Change roles - *Sep 12, 2012*
+- Check permissions with the `permit()` method which allows you to override permissions on a user-level scope - *Sep 11, 2012*
+- Add custom fields to the registration page - *Sep 10, 2012*
+- Implement Cool Captcha instead of the default captcha - *Aug 29, 2012*

@@ -45,32 +45,6 @@ $captcha->CreateImage();
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * SimpleCaptcha class
  *
@@ -106,7 +80,7 @@ class SimpleCaptcha {
      */
     public $maxWordLength = 8;
 
-    /** Sessionname to store the original text */
+    /** Session name to store the original text */
     public $session_var = 'captcha';
 
     /** Background color in RGB-array */
