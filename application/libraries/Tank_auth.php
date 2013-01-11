@@ -662,24 +662,49 @@ class Tank_auth
 	 * array where $arr[0] is the key and $arr[1] is the value.
 	 *
 	 * @param array $result_array: The result of $query->result_array()
+	 * @param array $first Append details to the beginning of the array
+	 * @param string $return Return value: 'array|option|li'
+	 * @param string $default Checked value (used if 'option' is selected in $return)
 	 */
-	public function multi_to_assoc($result_array){
+	function multi_to_assoc($result_array, $first = array(), $return = 'array', $default = FALSE){
 		foreach($result_array as $val){
 			$val = array_values($val);
 			$arr[$val[0]] = $val[1];
 		}
+
+		if($first) $arr = array_merge($first, $arr);
 		
-		return $arr;
+		if($return == 'array'){
+			return $arr;
+		}
+		elseif($return == 'option'){
+			$option_arr = '';
+			foreach($arr as $key=>$val){
+				$selected = $default;
+				$selected = $default == $key ? 'selected' : '';
+				$option_arr .= "<option value='{$key}' {$selected}>{$val}</option>";
+			}
+
+			return $option_arr;
+		}
+		elseif($return == 'li'){
+			$li_arr = '';
+			foreach($arr as $key=>$val){
+				$li_arr .= "<li>{$val}</li>";
+			}
+
+			return $li_arr;
+		}
 	}
 	
 	/**
-	 * Gets $query->result_array() except this deals with only the first element of each array.
+	 * Gets result_array() except this deals with only the first element of each array.
 	 * This gets the value of that first element and saves them in an array.
 	 * This works on indexed and assoc arrays.
 	 *
 	 * @param array $result_array: The result of $query->result_array()
 	 */
-	public function multi_to_single($result_array){
+	function multi_to_single($result_array){
 		$keys = array_keys($result_array[0]);
 		foreach($result_array as $val){
 			$arr[] = $val[$keys[0]];
@@ -823,11 +848,35 @@ class Tank_auth
 	}
 	
 	/**
-	 *
+	 * Gets values from the db for use in a dropdown field for new registrations
+	 * @param array $fields 2 column names which will form the <select> key=>value pair
+	 * @param string $where Create a more detailed query for example: "WHERE a=b LIMIT 10" It's up to you.
+	 * @return multi array|option|li (default: array)
 	 */
 	public function create_regdb_dropdown($dbname, $fields){
 		return $this->ci->users->create_regdb_dropdown($dbname, $fields);
 	}
+
+	/**
+	 * Replace 2 <br> or <br /> into a single <p> tag
+	 * @param string $text String for parsing
+	 * @return string
+	 */
+	function replace_br($text) {
+	    $text = preg_replace('#(?:<br\s*/?>\s*?){2,}#', '</p><p>', $text);
+	    return "<p>{$text}</p>";
+	}
+
+
+	/**
+	 * Remove http:// from the beginning of a string
+	 * @param string $str String for parsing
+	 * @return string
+	 */
+	function strip_http($str){
+		return preg_replace('/^http:\/\//', '', $str);
+	}	
+
 }
 
 /* End of file Tank_auth.php */
