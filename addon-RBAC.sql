@@ -15,7 +15,9 @@ CREATE  TABLE IF NOT EXISTS `permissions` (
   `parent` VARCHAR(100) NULL ,
   `sort` TINYINT UNSIGNED NULL ,
   PRIMARY KEY (`permission_id`) )
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
@@ -29,7 +31,9 @@ CREATE  TABLE IF NOT EXISTS `roles` (
   `full` VARCHAR(50) NOT NULL ,
   `default` TINYINT(1) NOT NULL ,
   PRIMARY KEY (`role_id`) )
-ENGINE = InnoDB;
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
@@ -41,9 +45,21 @@ CREATE  TABLE IF NOT EXISTS `role_permissions` (
   `role_id` SMALLINT UNSIGNED NOT NULL ,
   `permission_id` SMALLINT UNSIGNED NOT NULL ,
   PRIMARY KEY (`role_id`, `permission_id`) ,
-  INDEX `role_id_idx` (`role_id` ASC) ,
-  INDEX `task_id_idx` (`permission_id` ASC) )
-ENGINE = InnoDB;
+  INDEX `rp_role_id` (`role_id` ASC) ,
+  INDEX `rp_permission_id` (`permission_id` ASC) ,
+  CONSTRAINT `rp_role_id`
+    FOREIGN KEY (`role_id` )
+    REFERENCES `roles` (`role_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `rp_permission_id`
+    FOREIGN KEY (`permission_id` )
+    REFERENCES `permissions` (`permission_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
@@ -55,9 +71,21 @@ CREATE  TABLE IF NOT EXISTS `user_roles` (
   `user_id` INT UNSIGNED NOT NULL ,
   `role_id` SMALLINT UNSIGNED NOT NULL ,
   PRIMARY KEY (`user_id`, `role_id`) ,
-  INDEX `user_id_idx` (`user_id` ASC) ,
-  INDEX `role_id_idx` (`role_id` ASC) )
-ENGINE = InnoDB;
+  INDEX `ur_user_id` (`user_id` ASC) ,
+  INDEX `ur_role_id` (`role_id` ASC) ,
+  CONSTRAINT `ur_user_id`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `ur_role_id`
+    FOREIGN KEY (`role_id` )
+    REFERENCES `roles` (`role_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
 
 
 -- -----------------------------------------------------
@@ -70,6 +98,24 @@ CREATE  TABLE IF NOT EXISTS `overrides` (
   `permission_id` SMALLINT UNSIGNED NOT NULL ,
   `allow` TINYINT(1) UNSIGNED NOT NULL ,
   PRIMARY KEY (`user_id`, `permission_id`) ,
-  INDEX `user_id_idx` (`user_id` ASC) ,
-  INDEX `task_id_idx` (`permission_id` ASC) )
-ENGINE = InnoDB;
+  INDEX `ovr_user_id` (`user_id` ASC) ,
+  INDEX `ovr_permission_id` (`permission_id` ASC) ,
+  CONSTRAINT `ovr_user_id`
+    FOREIGN KEY (`user_id` )
+    REFERENCES `users` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `ovr_permission_id`
+    FOREIGN KEY (`permission_id` )
+    REFERENCES `permissions` (`permission_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci;
+
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

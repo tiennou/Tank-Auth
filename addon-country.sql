@@ -43,7 +43,6 @@ INSERT INTO `country` (`Code`, `Name`, `Continent`, `Region`, `LocalName`) VALUE
 ('AI', 'Anguilla', 'North America', 'Caribbean', 'Anguilla'),
 ('AL', 'Albania', 'Europe', 'Southern Europe', 'Shqipëria'),
 ('AM', 'Armenia', 'Asia', 'Middle East', 'Hajastan'),
--- ('AN', 'Netherlands Antilles', 'North America', 'Caribbean', 'Nederlandse Antillen'),
 ('AO', 'Angola', 'Africa', 'Central Africa', 'Angola'),
 ('AQ', 'Antarctica', 'Antarctica', 'Antarctica', '–'),
 ('AR', 'Argentina', 'South America', 'South America', 'Argentina'),
