@@ -192,7 +192,7 @@ class Tank_auth
 			if($custom) $data['meta'] = $custom;
 
 			if ($email_activation) {
-				$data['new_email_key'] = md5(rand().microtime());
+				$data['new_email_key'] = md5(mt_rand().microtime());
 			}
 			if (!is_null($res = $this->ci->users->create_user($data, !$email_activation))) {
 				$data['user_id'] = $res['user_id'];
@@ -252,7 +252,7 @@ class Tank_auth
 				return $data;
 
 			} elseif ($this->ci->users->is_email_available($email)) {
-				$data['new_email_key'] = md5(rand().microtime());
+				$data['new_email_key'] = md5(mt_rand().microtime());
 				$this->ci->users->set_new_email($user_id, $email, $data['new_email_key'], FALSE);
 				return $data;
 
@@ -298,7 +298,7 @@ class Tank_auth
 					'user_id'		=> $user->id,
 					'username'		=> $user->username,
 					'email'			=> $user->email,
-					'new_pass_key'	=> md5(rand().microtime()),
+					'new_pass_key'	=> md5(mt_rand().microtime()),
 				);
 
 				$this->ci->users->set_password_key($user->id, $data['new_pass_key']);
@@ -438,7 +438,7 @@ class Tank_auth
 					return $data;
 
 				} elseif ($this->ci->users->is_email_available($new_email)) {
-					$data['new_email_key'] = md5(rand().microtime());
+					$data['new_email_key'] = md5(mt_rand().microtime());
 					$this->ci->users->set_new_email($user_id, $new_email, $data['new_email_key'], TRUE);
 					return $data;
 
@@ -518,7 +518,7 @@ class Tank_auth
 	private function create_autologin($user_id)
 	{
 		$this->ci->load->helper('cookie');
-		$key = substr(md5(uniqid(rand().get_cookie($this->ci->config->item('sess_cookie_name')))), 0, 16);
+		$key = substr(md5(uniqid(mt_rand().get_cookie($this->ci->config->item('sess_cookie_name')))), 0, 16);
 
 		$this->ci->load->model('tank_auth/user_autologin');
 		$this->ci->user_autologin->purge($user_id);
