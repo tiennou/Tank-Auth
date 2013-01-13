@@ -15,9 +15,9 @@ CREATE  TABLE IF NOT EXISTS `ci_sessions` (
   `last_activity` INT UNSIGNED NOT NULL DEFAULT 0 ,
   `user_data` TEXT CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   PRIMARY KEY (`session_id`) )
-ENGINE = InnoDB
+ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_bin;
+COLLATE = utf8_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -31,9 +31,9 @@ CREATE  TABLE IF NOT EXISTS `login_attempts` (
   `login` VARCHAR(50) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   `time` TIMESTAMP NOT NULL ,
   PRIMARY KEY (`id`) )
-ENGINE = InnoDB
+ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_bin;
+COLLATE = utf8_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -48,9 +48,9 @@ CREATE  TABLE IF NOT EXISTS `user_autologin` (
   `last_ip` VARCHAR(40) CHARACTER SET 'utf8' COLLATE 'utf8_bin' NOT NULL ,
   `last_login` TIMESTAMP NOT NULL ,
   PRIMARY KEY (`key_id`, `user_id`) )
-ENGINE = InnoDB
+ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_bin;
+COLLATE = utf8_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -68,9 +68,9 @@ CREATE  TABLE IF NOT EXISTS `user_profiles` (
   `modified` TIMESTAMP NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `name` (`name` ASC) )
-ENGINE = InnoDB
+ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_bin;
+COLLATE = utf8_unicode_ci;
 
 
 -- -----------------------------------------------------
@@ -99,9 +99,9 @@ CREATE  TABLE IF NOT EXISTS `users` (
   PRIMARY KEY (`id`) ,
   INDEX `username` (`username` ASC) ,
   INDEX `email` (`email` ASC) )
-ENGINE = InnoDB
+ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_bin;
+COLLATE = utf8_unicode_ci;
 
 
 

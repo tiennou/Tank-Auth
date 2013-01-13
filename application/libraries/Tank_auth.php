@@ -201,6 +201,7 @@ class Tank_auth
 				return $data;
 			}
 		}
+
 		return NULL;
 	}
 

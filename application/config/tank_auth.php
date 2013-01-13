@@ -34,9 +34,9 @@ $config['username_exceptions'] = array();
 |
 |--------------------------------------------------------------------------
 */
-/*
 // Sample fields. Add as many as you like and customize as needed. View README.md for more info and how to use.
-$config['registration_fields'][] = array('name', 'Full name', 'trim|required', 'text');
+/*
+$config['registration_fields'][] = array('coffee', 'Coffee', 'trim|required', 'text');
 $config['registration_fields'][] = array('website', 'Website', 'trim|required', 'text', array('class'=>'something'));
 
 $config['registration_fields'][] = array('gender', 'Gender', 'trim|required|alpha|max_length[1]', 'radio', array('m'=>'Male', 'f'=>'Female'), '<p>', '</p>');
@@ -88,7 +88,7 @@ $config['phpass_hash_strength'] = 8;
 */
 $config['allow_registration'] = TRUE;
 $config['captcha_registration'] = TRUE;
-$config['email_activation'] = TRUE;
+$config['email_activation'] = FALSE;
 $config['email_activation_expire'] = 60*60*24*2;
 $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
