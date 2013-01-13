@@ -844,7 +844,7 @@ class Tank_auth
 
 		$this->ci->session->set_flashdata('tankauth_allow_notice', TRUE);
 		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
-		redirect('/notice/view/'.$page);
+		redirect('/welcome/notice/'.$page);
 	}
 	
 	/**
