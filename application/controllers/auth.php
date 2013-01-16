@@ -65,14 +65,7 @@ class Auth extends CI_Controller
 						$this->form_validation->set_value('remember'),
 						$data['login_by_username'],
 						$data['login_by_email'])) {								// success
-
-					// Approved or not
-					if ($this->tank_auth->is_approved()) {
-						$this->_show_message($this->lang->line('auth_message_logged_in'), TRUE);
-					} else {
-						$this->tank_auth->logout();
-						$this->_show_message($this->lang->line('auth_message_unapproved'), FALSE);
-					}
+							$this->_show_message($this->lang->line('auth_message_logged_in'), TRUE);
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -81,6 +74,9 @@ class Auth extends CI_Controller
 
 					} elseif (isset($errors['not_activated'])) {				// not activated user
 						redirect('auth/send_again');
+
+					} elseif (isset($errors['unapproved'])) {
+						$this->_show_message($this->lang->line('auth_message_unapproved'), FALSE);
 
 					} else {													// fail
 						foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);

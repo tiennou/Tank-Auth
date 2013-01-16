@@ -68,6 +68,9 @@ class Tank_auth
 					if ($user->banned == 1) {									// fail - banned
 						$this->error = array('banned' => $user->ban_reason);
 
+					} elseif ($user->approved != 1) {
+						// fail - unapproved
+						$this->error = array('unapproved' => '');
 					} else {
 						// Save to session
 						$this->ci->session->set_userdata(array(
