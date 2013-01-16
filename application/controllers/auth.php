@@ -562,7 +562,8 @@ class Auth extends CI_Controller
 	 */
 	function _create_captcha()
 	{
-		return site_url().$this->config->item('cool_captcha_folder', 'tank_auth').'/captcha.php';
+		$cool_captcha_folder = $this->config->item('cool_captcha_folder', 'tank_auth');
+		return base_url($cool_captcha_folder.'/captcha.php');
 	}
 
 	/**
