@@ -857,27 +857,6 @@ class Tank_auth
 	public function create_regdb_dropdown($dbname, $fields){
 		return $this->ci->users->create_regdb_dropdown($dbname, $fields);
 	}
-
-	/**
-	 * Replace 2 <br> or <br /> into a single <p> tag
-	 * @param string $text String for parsing
-	 * @return string
-	 */
-	function replace_br($text) {
-	    $text = preg_replace('#(?:<br\s*/?>\s*?){2,}#', '</p><p>', $text);
-	    return "<p>{$text}</p>";
-	}
-
-
-	/**
-	 * Remove http:// from the beginning of a string
-	 * @param string $str String for parsing
-	 * @return string
-	 */
-	function strip_http($str){
-		return preg_replace('/^http:\/\//', '', $str);
-	}	
-
 }
 
 /* End of file Tank_auth.php */
