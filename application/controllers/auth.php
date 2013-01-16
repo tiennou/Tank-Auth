@@ -8,8 +8,9 @@ class Auth extends CI_Controller
 
 		$this->load->helper(array('form', 'url'));
 		$this->load->library(array('form_validation', 'tank_auth'));
-		
-		if(version_compare(CI_VERSION,'2.1.0','<')) $this->load->library('security');
+
+		if (version_compare(CI_VERSION,'2.1.0','<'))
+			$this->load->library('security');
 		$this->lang->load('tank_auth');
 	}
 
@@ -64,12 +65,11 @@ class Auth extends CI_Controller
 						$this->form_validation->set_value('remember'),
 						$data['login_by_username'],
 						$data['login_by_email'])) {								// success
-					
+
 					// Approved or not
-					if($this->tank_auth->is_approved()){
+					if ($this->tank_auth->is_approved()) {
 						redirect($this->config->item('login-success', 'tank_auth'));
-					}
-					else {
+					} else {
 						$this->tank_auth->logout();
 						$this->tank_auth->notice('acct-unapproved');
 					}
@@ -109,11 +109,10 @@ class Auth extends CI_Controller
 	{
 		$this->tank_auth->logout();
 		$redirect = $this->config->item('logout-success', 'tank_auth');
-		
-		if($redirect === FALSE){
+
+		if ($redirect === FALSE) {
 			$this->tank_auth->notice('logout-success');
-		}
-		else {
+		} else {
 			redirect($redirect);
 		}
 	}
@@ -141,32 +140,31 @@ class Auth extends CI_Controller
 			$this->form_validation->set_rules('email', 'Email', 'trim|required|xss_clean|valid_email');
 			$this->form_validation->set_rules('password', 'Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
 			$this->form_validation->set_rules('confirm_password', 'Confirm Password', 'trim|required|xss_clean|matches[password]');
-			
+
 			// Check for additional fields
 			$registration_fields = (bool)$this->config->item('registration_fields', 'tank_auth') ? $this->config->item('registration_fields', 'tank_auth') : array();
-			if($registration_fields){
-				foreach($registration_fields as $val){
+			if ($registration_fields) {
+				foreach ($registration_fields as $val) {
 					$data['registration_fields'][] = $val;
 					list($name, $label, $rules, $type) = $val;
 					$this->form_validation->set_rules($name, $label, $rules);
-					
+
 					// Check if you need to query a db
-					if($type == 'dropdown'){
+					if ($type == 'dropdown') {
 						$selection = $val[4];
-						
-						if(is_string($val[4])){
+
+						if (is_string($val[4])) {
 							$default = isset($val[5]) ? $val[5] : NULL;
 							preg_match('/\w+(?=\.)/', $selection, $dbname);
 							preg_match_all('/(?<=\.)\w+/', $selection, $fields);
 							$fields = $fields[0];
-							
+
 							// Create the dropdown field
 							//$data['dropdown_name'] = $name;
 							$data['dropdown_items'][$name] = $this->tank_auth->create_regdb_dropdown($dbname, $fields);
 							$data['dropdown_items_default'][$name] = $default;
 							$data['db_dropdowns'][] = $name;
-						}
-						else {
+						} else {
 							$default = isset($val[5]) ? $val[5] : NULL;
 							$data['dropdown_simple'][$name] = $selection;
 							$data['dropdown_simple_default'][$name] = $default;
@@ -189,28 +187,28 @@ class Auth extends CI_Controller
 			$email_activation = $this->config->item('email_activation', 'tank_auth');
 
 			if ($this->form_validation->run()) {								// validation ok
-				
+
 				// Custom registration fields
 				$registration_fields = (bool)$this->config->item('registration_fields', 'tank_auth') ? $this->config->item('registration_fields', 'tank_auth') : array();
-				if($registration_fields){
+				if ($registration_fields) {
 					//$datatypes = $this->tank_auth->get_profile_datatypes();
-					foreach($this->config->item('registration_fields', 'tank_auth') as $val){
+					foreach ($this->config->item('registration_fields', 'tank_auth') as $val) {
 						$name = $val[0];
 						$value = $this->form_validation->set_value($name);
 						$custom[$name] = $value;
 					}
-					
+
 					//Remove all NULL values so MySQL will use the default value
-					foreach($custom as $key=>$val){
-						if(is_null($val)) unset($custom[$key]);
+					foreach ($custom as $key => $val) {
+						if (is_null($val))
+							unset($custom[$key]);
 					}
-					
+
 					$custom = serialize($custom);
-				}
-				else {
+				} else {
 					$custom = '';
 				}
-			
+
 				// Create the user here
 				if (!is_null($data = $this->tank_auth->create_user(
 						$use_username ? $this->form_validation->set_value('username') : '',
@@ -235,15 +233,15 @@ class Auth extends CI_Controller
 						}
 						unset($data['password']); // Clear password (just for any case)
 					}
-					
+
 					$this->tank_auth->notice('registration-success');
-					
+
 				} else {
 					$errors = $this->tank_auth->get_error_message();
 					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
 				}
 			}
-			
+
 			if ($captcha_registration) {
 				if ($use_recaptcha) {
 					$data['recaptcha_html'] = $this->_create_recaptcha();
@@ -251,8 +249,7 @@ class Auth extends CI_Controller
 					$data['captcha_html'] = $this->_create_captcha();
 				}
 			}
-			
-			//$data['debug'] = $this->tank_auth->debug('14');
+
 			$data['use_username'] = $use_username;
 			$data['captcha_registration'] = $captcha_registration;
 			$data['use_recaptcha'] = $use_recaptcha;
@@ -290,7 +287,7 @@ class Auth extends CI_Controller
 					foreach ($errors as $k => $v)	$data['errors'][$k] = $this->lang->line($v);
 				}
 			}
-			
+
 			$data['logout_link'] = site_url().'auth/logout';
 			$this->load->view('auth/send_again_form', $data);
 		}
@@ -305,8 +302,9 @@ class Auth extends CI_Controller
 	 */
 	function activate()
 	{
-		if(!$this->uri->segment(4)) redirect('/auth/login');
-		
+		if (!$this->uri->segment(4))
+			redirect('/auth/login');
+
 		$user_id		= $this->uri->segment(3);
 		$new_email_key	= $this->uri->segment(4);
 
@@ -346,7 +344,7 @@ class Auth extends CI_Controller
 
 					// Send email with password activation link
 					$this->_send_email('forgot_password', $data['email'], $data);
-					
+
 					$this->tank_auth->notice('password-sent');
 
 				} else {
@@ -384,7 +382,7 @@ class Auth extends CI_Controller
 
 				// Send email with new password
 				$this->_send_email('reset_password', $data['email'], $data);
-				
+
 				$this->tank_auth->notice('password-reset');
 
 			} else {														// fail
@@ -415,7 +413,7 @@ class Auth extends CI_Controller
 
 		} else {
 			$this->form_validation->set_rules('old_password', 'Old Password', 'trim|required|xss_clean');
-			
+
 			$this->form_validation->set_rules('new_password', 'New Password', 'trim|required|xss_clean|min_length['.$this->config->item('password_min_length', 'tank_auth').']|max_length['.$this->config->item('password_max_length', 'tank_auth').']');
 			$this->form_validation->set_rules('confirm_new_password', 'Confirm new Password', 'trim|required|xss_clean|matches[new_password]');
 
@@ -461,7 +459,7 @@ class Auth extends CI_Controller
 
 					// Send email with new email address and its activation link
 					$this->_send_email('change_email', $data['new_email'], $data);
-					
+
 					$this->tank_auth->notice('email-sent', $data);
 
 				} else {
@@ -513,7 +511,7 @@ class Auth extends CI_Controller
 			if ($this->form_validation->run()) {								// validation ok
 				if ($this->tank_auth->delete_user(
 						$this->form_validation->set_value('password'))) {		// success
-					
+
 					$this->tank_auth->notice('user-deleted');
 
 				} else {														// fail
@@ -524,7 +522,7 @@ class Auth extends CI_Controller
 			$this->load->view('auth/unregister_form', $data);
 		}
 	}
-	
+
 	/**
 	 * Show info message
 	 *
@@ -578,11 +576,11 @@ class Auth extends CI_Controller
 	function _check_captcha($code)
 	{
 		session_start();
-		if($_SESSION['captcha'] != $_POST['captcha']){
+		if ($_SESSION['captcha'] != $_POST['captcha']) {
 			$this->form_validation->set_message('_check_captcha', 'The Confirmation Code is wrong.');
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
 
@@ -624,7 +622,7 @@ class Auth extends CI_Controller
 		}
 		return TRUE;
 	}
-	
+
 	/**
 	 * CALLBACK: Blacklisted usernames.
 	 *
@@ -633,78 +631,77 @@ class Auth extends CI_Controller
 		$blacklist = $this->config->item('username_blacklist', 'tank_auth');
 		$prepend = $this->config->item('username_blacklist_prepend', 'tank_auth');
 		$exceptions = $this->config->item('username_exceptions', 'tank_auth');
-		
+
 		// Generate complete list of blacklisted names
 		$full_blacklist = $blacklist;
-		foreach($blacklist as $val){
-			foreach($prepend as $v){
+		foreach ($blacklist as $val) {
+			foreach ($prepend as $v) {
 				$full_blacklist[] = $v.$val;
 			}
 		}
-		
+
 		// Remove exceptions
-		foreach($full_blacklist as $key=>$name){
-			foreach($exceptions as $exc){
-				if($exc == $name){
+		foreach ($full_blacklist as $key => $name) {
+			foreach ($exceptions as $exc) {
+				if ($exc == $name) {
 					unset($full_blacklist[$key]);
 					break;
 				}
 			}
 		}
-		
+
 		$valid = TRUE;
-		foreach($full_blacklist as $val){
-			if($str == $val){
+		foreach ($full_blacklist as $val) {
+			if ($str == $val) {
 				$this->form_validation->set_message('_check_username_blacklist', 'That username cannot be used.');
 				$valid = FALSE;
-				break; 
+				break;
 			}
 		}
-		 
+
 		 return $valid;
-	 }
-	 
+	}
+
 	 /**
 	  * CALLBACK: Check if username exists.
 		*
 		*/
-	function _check_username_exists($str){
+	function _check_username_exists($str) {
 		$this->load->database();
 		$query = $this->db->query("SELECT COUNT(*) count FROM {$this->config->item('db_table_prefix', 'tank_auth')}users WHERE username=? LIMIT 1", array($str));
 		$row = $query->row();
-		
-		if($row->count){
+
+		if ($row->count) {
 			$this->form_validation->set_message('_check_username_exists', 'That username already exists');
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
-	
+
 	/**
 	 * CALLBACK: Zero not allowed
 	 */
-	function _not_zero($str){
-		if($str == '0'){
+	function _not_zero($str) {
+		if ($str == '0') {
 			$this->form_validation->set_message('_not_zero', 'The %s field is required.');
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
-	
+
 	/**
 	 * CALLBACK: Null not allowed
 	 */
-	function _not_null($str){
-		if(is_null($str)){
+	function _not_null($str) {
+		if (is_null($str)) {
 			$this->form_validation->set_message('_not_null', 'The %s field is required.');
 			return FALSE;
 		}
-		
+
 		return TRUE;
 	}
-	
 }
 
 /* End of file auth.php */

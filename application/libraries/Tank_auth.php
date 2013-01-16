@@ -34,7 +34,7 @@ class Tank_auth
 		// Try to autologin
 		$this->autologin();
 	}
-	
+
 	/**
 	 * Login user on the site. Return TRUE if login is successful
 	 * (user exists and activated, password is correct), otherwise FALSE.
@@ -68,7 +68,7 @@ class Tank_auth
 					if ($user->banned == 1) {									// fail - banned
 						$this->error = array('banned' => $user->ban_reason);
 
-					} else {						
+					} else {
 						// Save to session
 						$this->ci->session->set_userdata(array(
 								'user_id'	=> $user->id,
@@ -76,14 +76,14 @@ class Tank_auth
 								'status'	=> ($user->activated == 1) ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED,
 								'roles'=>$this->ci->users->get_roles($user->id)
 						));
-						
+
 						if ($user->activated == 0) {							// fail - not activated
 							$this->error = array('not_activated' => '');
 
 						} else {												// success
 							$user_profile = $this->ci->users->get_user_profile($user->id);
 							$this->ci->session->set_userdata('user_profile', $user_profile);
-							
+
 							if ($remember) {
 								$this->create_autologin($user->id);
 							}
@@ -117,7 +117,7 @@ class Tank_auth
 	function logout()
 	{
 		$this->delete_autologin();
-		
+
 		// See http://codeigniter.com/forums/viewreply/662369/ as the reason for the next line
 		$this->ci->session->set_userdata(array('user_id' => '', 'username' => '', 'status' => ''));
 
@@ -135,7 +135,7 @@ class Tank_auth
 	{
 		return $this->ci->session->userdata('status') === ($activated ? STATUS_ACTIVATED : STATUS_NOT_ACTIVATED);
 	}
-	
+
 	/**
 	 * Get user_id
 	 *
@@ -188,7 +188,7 @@ class Tank_auth
 				'last_ip'	=> $this->ci->input->ip_address(),
 				'approved'=>(int)$this->ci->config->item('acct_approval', 'tank_auth')
 			);
-			
+
 			if($custom) $data['meta'] = $custom;
 
 			if ($email_activation) {
@@ -649,7 +649,7 @@ class Tank_auth
 					$this->ci->config->item('login_attempt_expire', 'tank_auth'));
 		}
 	}
-	
+
 	/**
 	 * Gets the datatype of a table and converts it to the format $arr['column_name'] = 'datatype'
 	 */
@@ -657,7 +657,7 @@ class Tank_auth
 		$result_array = $this->ci->users->get_profile_datatypes();
 		return $this->multi_to_assoc($result_array);
 	}
-	
+
 	/**
 	 * Converts a multidimensional array (2 levels only) into a single associative
 	 * array where $arr[0] is the key and $arr[1] is the value.
@@ -674,7 +674,7 @@ class Tank_auth
 		}
 
 		if($first) $arr = array_merge($first, $arr);
-		
+
 		if($return == 'array'){
 			return $arr;
 		}
@@ -697,7 +697,7 @@ class Tank_auth
 			return $li_arr;
 		}
 	}
-	
+
 	/**
 	 * Gets result_array() except this deals with only the first element of each array.
 	 * This gets the value of that first element and saves them in an array.
@@ -710,10 +710,10 @@ class Tank_auth
 		foreach($result_array as $val){
 			$arr[] = $val[$keys[0]];
 		}
-		
+
 		return $arr;
 	}
-	
+
 	/**
 	 * Check if user has permission to do an action
 	 *
@@ -725,7 +725,7 @@ class Tank_auth
 		$user_permissions = $this->ci->users->get_permissions($user_id);
 		$overrides = $this->ci->users->get_permission_overrides($user_id);
 		$allow = FALSE;
-		
+
 		// Check role permissions
 		foreach($user_permissions as $val){
 			if($val == $permission){
@@ -733,7 +733,7 @@ class Tank_auth
 				break;
 			}
 		}
-		
+
 		// Check if there are overrides and overturn the result as needed
 		if($overrides){
 			foreach($overrides as $val){
@@ -743,10 +743,10 @@ class Tank_auth
 				}
 			}
 		}
-		
+
 		return $allow;
 	}
-	
+
 	/**
 	 * Get a user's roles
 	 *
@@ -757,7 +757,7 @@ class Tank_auth
 		$user_id = is_null($user_id) ? $this->ci->session->userdata('user_id') : $user_id;
 		return $this->ci->users->get_roles($user_id);
 	}
-	
+
 	/**
 	 * Overriding permissions method
 	 */
@@ -770,7 +770,7 @@ class Tank_auth
 	public function flip_override($user_id, $permission){
 		return $this->ci->users->flip_override($user_id, $permission);
 	}
-	
+
 	/**
 	 * Role management methods
 	 */
@@ -783,7 +783,7 @@ class Tank_auth
 	public function change_role($user_id, $old, $new){
 		return $this->ci->users->change_role($user_id, $old, $new);
 	}
-	
+
 	/**
 	 * Permission management methods
 	 */
@@ -807,10 +807,10 @@ class Tank_auth
 			'parent'=>$parent,
 			'sort'=>$sort
 		);
-		
+
 		return $this->ci->users->save_permission($data);
 	}
-	
+
 	/**
 	 * Get user profile contents
 	 */
@@ -818,7 +818,7 @@ class Tank_auth
 		$user_id = is_null($user_id) ? $this->session->userdata('user_id') : $user_id;
 		return $this->ci->users->get_user_profile($user_id);
 	}
-	
+
 	/**
 	 * Account approval methods
 	 */
@@ -832,7 +832,7 @@ class Tank_auth
 	public function unapprove_user($user_id){
 		return $this->ci->users->unapprove_user($user_id);
 	}
-	
+
 	/**
 	 * Open a notice page
 	 */
@@ -847,7 +847,7 @@ class Tank_auth
 		$this->ci->session->set_flashdata('tankauth_notice_data', $data);
 		redirect('/welcome/notice/'.$page);
 	}
-	
+
 	/**
 	 * Gets values from the db for use in a dropdown field for new registrations
 	 * @param array $fields 2 column names which will form the <select> key=>value pair
