@@ -150,7 +150,7 @@ $config['forgot_password_expire'] = 60*15;
 |--------------------------------------------------------------------------
 | Cool Captcha settings
 |
-| When upgraidng Cool Captcha, simple replace the contents of the captcha folder
+| When upgrading Cool Captcha, simply replace the contents of the captcha folder
 | with the new version. No editing required.
 |--------------------------------------------------------------------------
 */
