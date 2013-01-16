@@ -27,7 +27,7 @@ class Auth extends CI_Controller
 	function login()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect($this->config->item('login-success', 'tank_auth'));
+			$this->_show_message($this->lang->line('auth_message_already_logged_in'), TRUE);
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('auth/send_again');
@@ -68,16 +68,16 @@ class Auth extends CI_Controller
 
 					// Approved or not
 					if ($this->tank_auth->is_approved()) {
-						redirect($this->config->item('login-success', 'tank_auth'));
+						$this->_show_message($this->lang->line('auth_message_logged_in'), TRUE);
 					} else {
 						$this->tank_auth->logout();
-						$this->tank_auth->notice('acct-unapproved');
+						$this->_show_message($this->lang->line('auth_message_unapproved'), FALSE);
 					}
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
 					if (isset($errors['banned'])) {								// banned user
-						$this->tank_auth->notice('user-banned');
+						$this->_show_message($this->lang->line('auth_message_banned'), FALSE);
 
 					} elseif (isset($errors['not_activated'])) {				// not activated user
 						redirect('auth/send_again');
@@ -108,13 +108,8 @@ class Auth extends CI_Controller
 	function logout()
 	{
 		$this->tank_auth->logout();
-		$redirect = $this->config->item('logout-success', 'tank_auth');
 
-		if ($redirect === FALSE) {
-			$this->tank_auth->notice('logout-success');
-		} else {
-			redirect($redirect);
-		}
+		$this->_show_message($this->lang->line('auth_message_logged_out'), FALSE);
 	}
 
 	/**
@@ -125,13 +120,13 @@ class Auth extends CI_Controller
 	function register()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect($this->config->item('register_redirect', 'tank_auth'));
+			$this->_show_message($this->lang->line('auth_message_already_logged_in'), TRUE);
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('auth/send_again');
 
 		} elseif (!$this->config->item('allow_registration', 'tank_auth')) {	// registration is off
-			$this->tank_auth->notice('registration-disabled');
+			$this->_show_message($this->lang->line('auth_message_registration_disabled'), FALSE);
 		} else {
 			$use_username = $this->config->item('use_username', 'tank_auth');
 			if ($use_username) {
@@ -226,6 +221,8 @@ class Auth extends CI_Controller
 
 						unset($data['password']); // Clear password (just for any case)
 
+						$this->_show_message($this->lang->line('auth_message_registration_completed_1'), FALSE);
+
 					} else {
 						if ($this->config->item('email_account_details', 'tank_auth')) {	// send "welcome" email
 
@@ -234,7 +231,7 @@ class Auth extends CI_Controller
 						unset($data['password']); // Clear password (just for any case)
 					}
 
-					$this->tank_auth->notice('registration-success');
+					$this->_show_message($this->lang->line('auth_message_registration_completed_2').' '.anchor('/auth/login/', lang('auth_page_login')), TRUE);
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -280,7 +277,8 @@ class Auth extends CI_Controller
 					$data['activation_period'] = $this->config->item('email_activation_expire', 'tank_auth') / 3600;
 
 					$this->_send_email('activate', $data['email'], $data);
-					$this->tank_auth->notice('activation-sent', $data);
+
+					$this->_show_message(sprintf($this->lang->line('auth_message_activation_email_sent'), $data['email']), FALSE);
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -311,10 +309,10 @@ class Auth extends CI_Controller
 		// Activate user
 		if ($this->tank_auth->activate_user($user_id, $new_email_key)) {		// success
 			$this->tank_auth->logout();
-			$this->tank_auth->notice('activation-complete');
+			$this->_show_message($this->lang->line('auth_message_activation_completed').' '.anchor('/auth/login/', lang('auth_page_login')), TRUE);
 
 		} else {																// fail
-			$this->tank_auth->notice('activation-failed');
+			$this->_show_message($this->lang->line('auth_message_activation_failed'), FALSE);
 		}
 	}
 
@@ -326,7 +324,7 @@ class Auth extends CI_Controller
 	function forgot_password()
 	{
 		if ($this->tank_auth->is_logged_in()) {									// logged in
-			redirect('');
+			$this->_show_message($this->lang->line('auth_message_already_logged_in'), TRUE);
 
 		} elseif ($this->tank_auth->is_logged_in(FALSE)) {						// logged in, not activated
 			redirect('auth/send_again');
@@ -345,7 +343,7 @@ class Auth extends CI_Controller
 					// Send email with password activation link
 					$this->_send_email('forgot_password', $data['email'], $data);
 
-					$this->tank_auth->notice('password-sent');
+					$this->_show_message($this->lang->line('auth_message_new_password_sent'), FALSE);
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -383,10 +381,10 @@ class Auth extends CI_Controller
 				// Send email with new password
 				$this->_send_email('reset_password', $data['email'], $data);
 
-				$this->tank_auth->notice('password-reset');
+				$this->_show_message($this->lang->line('auth_message_new_password_activated').' '.anchor('/auth/login/', lang('auth_page_login')), FALSE);
 
 			} else {														// fail
-				$this->tank_auth->notice('password-failed');
+				$this->_show_message($this->lang->line('auth_message_new_password_failed'), FALSE);
 			}
 		} else {
 			// Try to activate user by password key (if not activated yet)
@@ -395,7 +393,7 @@ class Auth extends CI_Controller
 			}
 
 			if (!$this->tank_auth->can_reset_password($user_id, $new_pass_key)) {
-				$this->tank_auth->notice('password-failed');
+				$this->_show_message($this->lang->line('auth_message_new_password_failed'), FALSE);
 			}
 		}
 		$this->load->view('auth/reset_password_form', $data);
@@ -423,7 +421,7 @@ class Auth extends CI_Controller
 				if ($this->tank_auth->change_password(
 						$this->form_validation->set_value('old_password'),
 						$this->form_validation->set_value('new_password'))) {	// success
-					$this->tank_auth->notice('password-changed');
+							$this->_show_message($this->lang->line('auth_message_password_changed'), TRUE);
 
 				} else {														// fail
 					$errors = $this->tank_auth->get_error_message();
@@ -460,7 +458,7 @@ class Auth extends CI_Controller
 					// Send email with new email address and its activation link
 					$this->_send_email('change_email', $data['new_email'], $data);
 
-					$this->tank_auth->notice('email-sent', $data);
+					$this->_show_message(sprintf($this->lang->line('auth_message_new_email_sent'), $data['new_email']), FALSE);
 
 				} else {
 					$errors = $this->tank_auth->get_error_message();
@@ -486,10 +484,10 @@ class Auth extends CI_Controller
 		// Reset email
 		if ($this->tank_auth->activate_new_email($user_id, $new_email_key)) {	// success
 			$this->tank_auth->logout();
-			$this->tank_auth->notice('email-activated');
+			$this->_show_message($this->lang->line('auth_message_new_email_activated').' '.anchor('/auth/login/', lang('auth_page_login')), FALSE);
 
 		} else {																// fail
-			$this->tank_auth->notice('email-failed');
+			$this->_show_message($this->lang->line('auth_message_new_email_failed'), FALSE);
 		}
 	}
 
@@ -512,7 +510,7 @@ class Auth extends CI_Controller
 				if ($this->tank_auth->delete_user(
 						$this->form_validation->set_value('password'))) {		// success
 
-					$this->tank_auth->notice('user-deleted');
+							$this->_show_message($this->lang->line('auth_message_unregistered'), FALSE);
 
 				} else {														// fail
 					$errors = $this->tank_auth->get_error_message();
@@ -529,13 +527,17 @@ class Auth extends CI_Controller
 	 * @param	string
 	 * @return	void
 	 */
-	/*
-	function _show_message($message)
+	function _show_message($message, $failure)
 	{
 		$this->session->set_flashdata('message', $message);
-		redirect('auth');
+		if ($failure) {
+			$failure_page = $this->config->item('logout-success', 'tank_auth');
+			redirect($failure_page);
+		} else {
+			$login_success_page = $this->config->item('login-success', 'tank_auth');
+			redirect($login_success_page);
+		}
 	}
-	*/
 
 	/**
 	 * Send email message of given type (activate, forgot_password, etc.)
