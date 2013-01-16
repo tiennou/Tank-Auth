@@ -94,7 +94,7 @@ $config['email_account_details'] = FALSE;
 $config['use_username'] = TRUE;
 
 // To manually approve accounts, set this to FALSE
-$config['acct_approval'] = TRUE;
+$config['manual_account_approval'] = TRUE;
 
 $config['username_min_length'] = 4;
 $config['username_max_length'] = 20;

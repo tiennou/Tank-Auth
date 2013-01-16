@@ -189,7 +189,7 @@ class Tank_auth
 				'password'	=> $hashed_password,
 				'email'		=> $email,
 				'last_ip'	=> $this->ci->input->ip_address(),
-				'approved'=>(int)$this->ci->config->item('acct_approval', 'tank_auth')
+				'approved'=>(int)$this->ci->config->item('manual_account_approval', 'tank_auth')
 			);
 
 			if($custom) $data['meta'] = $custom;
