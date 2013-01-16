@@ -242,7 +242,7 @@ class Tank_auth
 	 */
 	function change_email($email)
 	{
-		$user_id = $this->ci->session->userdata('user_id');
+		$user_id = $this->get_user_id();
 
 		if (!is_null($user = $this->ci->users->get_user_by_id($user_id, FALSE))) {
 
@@ -384,7 +384,7 @@ class Tank_auth
 	 */
 	function change_password($old_pass, $new_pass)
 	{
-		$user_id = $this->ci->session->userdata('user_id');
+		$user_id = $this->get_user_id();
 
 		if (!is_null($user = $this->ci->users->get_user_by_id($user_id, TRUE))) {
 
@@ -418,7 +418,7 @@ class Tank_auth
 	 */
 	function set_new_email($new_email, $password)
 	{
-		$user_id = $this->ci->session->userdata('user_id');
+		$user_id = $this->get_user_id();
 
 		if (!is_null($user = $this->ci->users->get_user_by_id($user_id, TRUE))) {
 
@@ -481,7 +481,7 @@ class Tank_auth
 	 */
 	function delete_user($password)
 	{
-		$user_id = $this->ci->session->userdata('user_id');
+		$user_id = $this->get_user_id();
 
 		if (!is_null($user = $this->ci->users->get_user_by_id($user_id, TRUE))) {
 
@@ -724,7 +724,7 @@ class Tank_auth
 	 * @return bool
 	 */
 	public function permit($permission){
-		$user_id = $this->ci->session->userdata('user_id');
+		$user_id = $this->get_user_id();
 		$user_permissions = $this->ci->users->get_permissions($user_id);
 		$overrides = $this->ci->users->get_permission_overrides($user_id);
 		$allow = FALSE;
@@ -757,7 +757,7 @@ class Tank_auth
 	 * @return array
 	 */
 	public function get_roles($user_id = NULL){
-		$user_id = is_null($user_id) ? $this->ci->session->userdata('user_id') : $user_id;
+		$user_id = is_null($user_id) ? $this->get_user_id() : $user_id;
 		return $this->ci->users->get_roles($user_id);
 	}
 
@@ -818,7 +818,7 @@ class Tank_auth
 	 * Get user profile contents
 	 */
 	public function get_user_profile($user_id = NULL){
-		$user_id = is_null($user_id) ? $this->session->userdata('user_id') : $user_id;
+		$user_id = is_null($user_id) ? $this->get_user_id() : $user_id;
 		return $this->ci->users->get_user_profile($user_id);
 	}
 
@@ -826,7 +826,7 @@ class Tank_auth
 	 * Account approval methods
 	 */
 	public function is_approved($user_id = NULL){
-		$user_id = is_null($user_id) ? $this->ci->session->userdata('user_id') : $user_id;
+		$user_id = is_null($user_id) ? $this->get_user_id() : $user_id;
 		return $this->ci->users->is_approved($user_id);
 	}
 	public function approve_user($user_id){
