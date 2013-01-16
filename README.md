@@ -18,18 +18,18 @@ How to use Tank Auth w/ RBAC
 
 Arguments for the methods below can be found in the *Tank_auth.php* library. Lift those sticky fingers and *Cmd/Ctrl+F* like your sex life depended on it!
 
-- `permit()`: The most important method of all! This checks if the user is allowed to do a certain permission (e.g. view a page)
+- `has_permission()`: The most important method of all! This checks if the user is allowed to do a certain permission (e.g. view a page)
 - `add_permission()` and `remove_permission()`: Add/Remove permissions of roles. All permissions are listed in the `permissions.permission` table.
 - `new_permission()`, `clear_permission()`, and `save_permission()`: Insert data in the `permissions` table.
 - `add_override()`, `remove_override()`, and `flip_override()`: Override permissions on a per-user basis. This allows you to give/take away permissions to users outside of their active role/s.
 - `add_role()`, `remove_role()`, `change_role()`: Basic role management for *Users*. If you're looking to create new roles in the `roles` table, I suggest you do it in SQL.
 
-Sample use for `permit()`:
+Sample use for `has_permission()`:
 
 	// Controller
-	// The permit() method has 1 argument which is any value from the `permissions.permission` field
+	// The has_permission() method has 1 argument which is any value from the `permissions.permission` field
 	
-	if($this->tank_auth->permit('edit page')){
+	if($this->tank_auth->has_permission('edit page')){
 		// Success
 	}
 	else {
@@ -53,7 +53,7 @@ If you imported data from **sample-RBAC.sql** then follow this step. If not then
 1. **Populate the `permissions` table.** These list down the permissions your users can take. Keep values for the `permission` field short and it's recommended that the first word be a verb (e.g. 'create user').
 1. **Fields in `permissions` table: `description`, `parent`, and `sort`.** These are _recommended_ but are optional since they are used if you are displaying your options in HTML in case you allow certain roles to manage permissions through the use of a form. If you prefer to use SQL instead of creating a form then these can be left empty.
 1. **Populate the `roles` table: create the roles your project will use.** This RBAC setup allows users to have _1 or more roles_. This prevents an influx of creating too many roles to accomodate user responsibilities.
-1. **Fields in `roles` table: `role`, `full`, and `default`.** Keep the `role` field one-word and lowercase for easy typing since this is what you will use when running the `permit()` method. The `full` field is the full name of the role and can be used if you're displaying your role permissions in HTML. The `default` field specifies which role is the default role when users sign up.
+1. **Fields in `roles` table: `role`, `full`, and `default`.** Keep the `role` field one-word and lowercase for easy typing since this is what you will use when running the `has_permission()` method. The `full` field is the full name of the role and can be used if you're displaying your role permissions in HTML. The `default` field specifies which role is the default role when users sign up.
 1. **Populate the `role_permissions` table.** Listing of all the permissions a role can take.
 
 > Permissions are assigned to roles and not users. For special cases where a certain user needs a permission outside of their role, use the `overrides` table ([Section IV: Give user extra permissions outside of their role](#d-give-user-extra-permissions-outside-of-their-role-optional)).
@@ -83,7 +83,7 @@ __Developer's note:__ This is used on a case-to-case basis only. It allows for e
 1. **Customize your user's permissions.** If you want to give certain user's extra power outside of their role, you can use the `overrides` table for that. This table allows you to add permissions outside of a user's role as well as remove permissions already within their role.
 1. **Fields in `overrides` table: `allow`.** This says whether a user can or cannot do a certain permission. Use `add_override()` to add to a user's permissions. The `flip_override()` method flips the `allow` field from a `1` to a `0` and vice versa.
 
-> When using the `permit()` method, Tank Auth checks your existing permissions from your role/s as well as any overrides you might have before returning a value. Cool!
+> When using the `has_permission()` method, Tank Auth checks your existing permissions from your role/s as well as any overrides you might have before returning a value. Cool!
 
 
 Custom Registration Fields
@@ -178,6 +178,6 @@ Changelog
 - Added views for each basic notification instead of using the lang file - *Sep 16, 2012*
 - Wrote the _How to use Tank Auth w/ RBAC_ directives (whew!) - *Sep 15, 2012*
 - Initial RBAC functionality achieved: Add/Remove/Change roles - *Sep 12, 2012*
-- Check permissions with the `permit()` method which allows you to override permissions on a user-level scope - *Sep 11, 2012*
+- Check permissions with the `has_permission()` method which allows you to override permissions on a user-level scope - *Sep 11, 2012*
 - Add custom fields to the registration page - *Sep 10, 2012*
 - Implement Cool Captcha instead of the default captcha - *Aug 29, 2012*

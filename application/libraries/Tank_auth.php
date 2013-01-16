@@ -723,7 +723,7 @@ class Tank_auth
 	 * @param string $permission: The permission you want to check for from the `permissions.permission` table.
 	 * @return bool
 	 */
-	public function permit($permission){
+	public function has_permission($permission){
 		$user_id = $this->get_user_id();
 		$user_permissions = $this->ci->users->get_permissions($user_id);
 		$overrides = $this->ci->users->get_permission_overrides($user_id);
