@@ -1,10 +1,10 @@
 <?php
 $login = array(
-	'name'	=> 'login',
-	'id'	=> 'login',
-	'value' => set_value('login'),
-	'maxlength'	=> 80,
-	'size'	=> 30,
+	'name'      => 'login',
+	'id'        => 'login',
+	'value'     => set_value('login'),
+	'maxlength' => 80,
+	'size'      => 30,
 );
 if ($this->config->item('use_username', 'tank_auth')) {
 	$login_label = 'Email or login';

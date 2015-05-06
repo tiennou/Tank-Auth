@@ -1,21 +1,21 @@
 <?php
 $old_password = array(
-	'name'	=> 'old_password',
-	'id'	=> 'old_password',
+	'name'  => 'old_password',
+	'id'    => 'old_password',
 	'value' => set_value('old_password'),
-	'size' 	=> 30,
+	'size'  => 30,
 );
 $new_password = array(
-	'name'	=> 'new_password',
-	'id'	=> 'new_password',
-	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
-	'size'	=> 30,
+	'name'      => 'new_password',
+	'id'        => 'new_password',
+	'maxlength' => $this->config->item('password_max_length', 'tank_auth'),
+	'size'      => 30,
 );
 $confirm_new_password = array(
-	'name'	=> 'confirm_new_password',
-	'id'	=> 'confirm_new_password',
-	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
-	'size' 	=> 30,
+	'name'      => 'confirm_new_password',
+	'id'        => 'confirm_new_password',
+	'maxlength' => $this->config->item('password_max_length', 'tank_auth'),
+	'size'      => 30,
 );
 ?>
 <?php echo form_open($this->uri->uri_string()); ?>

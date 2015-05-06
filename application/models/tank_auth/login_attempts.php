@@ -22,7 +22,7 @@ class Login_attempts extends CI_Model
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Get number of attempts to login occured from given IP-address or login
 	 *
@@ -34,19 +34,19 @@ class Login_attempts extends CI_Model
 	{
 		$this->db->select('1', FALSE);
 		$this->db->where('ip_address', $ip_address);
-		
+
 		if (strlen($login) > 0)
 		{
 			$this->db->or_where('login', $login);
 		}
 
 		$qres = $this->db->get($this->table_name);
-		
+
 		return $qres->num_rows();
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Increase number of attempts for given IP-address and login
 	 *
@@ -60,7 +60,7 @@ class Login_attempts extends CI_Model
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Clear all attempt records for given IP-address and login.
 	 * Also purge obsolete login attempts (to keep DB clear).
@@ -80,7 +80,7 @@ class Login_attempts extends CI_Model
 		$this->db->delete($this->table_name);
 	}
 
-	// --------------------------------------------------------------------		
+	// --------------------------------------------------------------------
 }
 
 /* End of file login_attempts.php */

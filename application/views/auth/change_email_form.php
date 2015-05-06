@@ -1,15 +1,15 @@
 <?php
 $password = array(
-	'name'	=> 'password',
-	'id'	=> 'password',
-	'size'	=> 30,
+	'name' => 'password',
+	'id'   => 'password',
+	'size' => 30,
 );
 $email = array(
-	'name'	=> 'email',
-	'id'	=> 'email',
-	'value'	=> set_value('email'),
-	'maxlength'	=> 80,
-	'size'	=> 30,
+	'name'      => 'email',
+	'id'        => 'email',
+	'value'     => set_value('email'),
+	'maxlength' => 80,
+	'size'      => 30,
 );
 ?>
 <?php echo form_open($this->uri->uri_string()); ?>

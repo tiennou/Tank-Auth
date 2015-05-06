@@ -24,7 +24,7 @@ class User_Autologin extends CI_Model
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Get user data for auto-logged in user.
 	 * Return NULL if given key or user ID is invalid.
@@ -41,19 +41,19 @@ class User_Autologin extends CI_Model
 		$this->db->join($this->table_name, $this->table_name.'.user_id = '.$this->users_table_name.'.id');
 		$this->db->where($this->table_name.'.user_id', $user_id);
 		$this->db->where($this->table_name.'.key_id', $key);
-		
+
 		$query = $this->db->get();
-		
-		if ($query->num_rows() == 1)
+
+		if ($query->num_rows() !== 1)
 		{
-			return $query->row();
+			return NULL;
 		}
-		
-		return NULL;
+
+		return $query->row();
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Save data for user's autologin
 	 *
@@ -64,15 +64,15 @@ class User_Autologin extends CI_Model
 	function set($user_id, $key)
 	{
 		return $this->db->insert($this->table_name, array(
-			'user_id' 		=> $user_id,
-			'key_id'	 	=> $key,
-			'user_agent' 	=> substr($this->input->user_agent(), 0, 149),
-			'last_ip' 		=> $this->input->ip_address(),
+			'user_id'    => $user_id,
+			'key_id'     => $key,
+			'user_agent' => substr($this->input->user_agent(), 0, 149),
+			'last_ip'    => $this->input->ip_address(),
 		));
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Delete user's autologin data
 	 *
@@ -88,7 +88,7 @@ class User_Autologin extends CI_Model
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Delete all autologin data for given user
 	 *
@@ -102,7 +102,7 @@ class User_Autologin extends CI_Model
 	}
 
 	// --------------------------------------------------------------------
-		
+
 	/**
 	 * Purge autologin data for given user and login conditions
 	 *
@@ -117,7 +117,7 @@ class User_Autologin extends CI_Model
 		$this->db->delete($this->table_name);
 	}
 
-	// --------------------------------------------------------------------	
+	// --------------------------------------------------------------------
 }
 
 /* End of file user_autologin.php */

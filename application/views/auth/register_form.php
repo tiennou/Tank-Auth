@@ -1,38 +1,38 @@
 <?php
 if ($use_username) {
 	$username = array(
-		'name'	=> 'username',
-		'id'	=> 'username',
-		'value' => set_value('username'),
-		'maxlength'	=> $this->config->item('username_max_length', 'tank_auth'),
-		'size'	=> 30,
+		'name'      => 'username',
+		'id'        => 'username',
+		'value'     => set_value('username'),
+		'maxlength' => $this->config->item('username_max_length', 'tank_auth'),
+		'size'      => 30,
 	);
 }
 $email = array(
-	'name'	=> 'email',
-	'id'	=> 'email',
-	'value'	=> set_value('email'),
-	'maxlength'	=> 80,
-	'size'	=> 30,
+	'name'      => 'email',
+	'id'        => 'email',
+	'value'     => set_value('email'),
+	'maxlength' => 80,
+	'size'      => 30,
 );
 $password = array(
-	'name'	=> 'password',
-	'id'	=> 'password',
-	'value' => set_value('password'),
-	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
-	'size'	=> 30,
+	'name'      => 'password',
+	'id'        => 'password',
+	'value'     => set_value('password'),
+	'maxlength' => $this->config->item('password_max_length', 'tank_auth'),
+	'size'      => 30,
 );
 $confirm_password = array(
-	'name'	=> 'confirm_password',
-	'id'	=> 'confirm_password',
-	'value' => set_value('confirm_password'),
-	'maxlength'	=> $this->config->item('password_max_length', 'tank_auth'),
-	'size'	=> 30,
+	'name'      => 'confirm_password',
+	'id'        => 'confirm_password',
+	'value'     => set_value('confirm_password'),
+	'maxlength' => $this->config->item('password_max_length', 'tank_auth'),
+	'size'      => 30,
 );
 $captcha = array(
-	'name'	=> 'captcha',
-	'id'	=> 'captcha',
-	'maxlength'	=> 8,
+	'name'      => 'captcha',
+	'id'        => 'captcha',
+	'maxlength' => 8,
 );
 ?>
 <?php echo form_open($this->uri->uri_string()); ?>
